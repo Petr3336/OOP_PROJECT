@@ -271,6 +271,11 @@ ServiceFabricBackup/
 *.mdf
 *.ldf
 *.ndf
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*/Migrations/
 
 # Business Intelligence projects
 *.rdl.data

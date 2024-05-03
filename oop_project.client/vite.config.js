@@ -30,8 +30,8 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
     }
 }
 
-const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7139';
+//const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
+//    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7139';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -44,13 +44,18 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://localhost:5000', // �������� �� ����� ������ ASP.NET Core �������
+                target: 'https://localhost:5000', // ASP.NET Core API
+                changeOrigin: true,
+                secure: false,
+            },
+            '/swagger' : {
+                target: 'https://localhost:5000', // Swagger api renderer
                 changeOrigin: true,
                 secure: false,
             }
 
         },
-        port: 8080,
+        port: env.ASPNETCORE_HTTPS_PORT,
         https: {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
