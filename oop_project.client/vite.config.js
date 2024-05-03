@@ -44,7 +44,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://localhost:5001', // Замените на адрес вашего ASP.NET Core сервера
+                target: 'https://localhost:5000', // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ ASP.NET Core пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 changeOrigin: true,
                 secure: false,
             }
