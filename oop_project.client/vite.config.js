@@ -55,7 +55,7 @@ export default defineConfig({
             }
 
         },
-        port: env.ASPNETCORE_HTTPS_PORT,
+        port: 8080,
         https: {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
