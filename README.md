@@ -1,70 +1,58 @@
 # OOP_PROJECT
  Проект по объектно ориентированному программированию, 2 курс, 2 полугодие
 
-# oop_project.client
-
-This template should help get you started developing with Vue 3 in Vite.
-
 ## Зависимости
 
-1. NodeJS
+1. NodeJS 
+2. Docker
 
-## Recommended IDE Setup
+> Зависимости требуется поставить перед установкой и конфигурацией проекта
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Запуск проекта
 
-## Customize configuration
+### Первичная настройка
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+1. Скопируйте репозиторий через git clone
+2. Откройте файл OOP_PROJECT.sln
 
-## Выполнять следующие команды в папке oop_project.client
+### Debug
 
-## Client project Setup 
+Для того что-бы запустить проект для отладки, без нам потребуется Docker для быстрой и простой развертки БД SQL Server.
 
-```sh
-npm install
-```
+1. Нажмите на стрелочку рядом с кнопкой запуска проекта
+	![[ConfigureProjectIcon.png]]
+2. Выберите "Настройка начальных проектов"
+3. В разделе "Запускаемый проект" выберите "Текущий выбор"
+	![[Current selection.png]]
+4. Для каждого сервера asp .net core выберите один из вариантов запуска
+	1. http
+	2. https
+	3. IIS Express
+	![[Pasted image 20240509215158.png]]
+5.  Повторите пункт 3, 4,
+6. Выберите вариант "Несколько запускаемых проектов" в разделе "Запускаемый проект".
+	Для каждого из проектов выберите действие "Запуск"
+	![[Pasted image 20240509215407.png]]
+7. Проект готов к работе
 
-### Compile and Hot-Reload for Development
 
-```sh
-npm run dev
-```
+### Release
 
-### Compile and Minify for Production
+Для того что-бы построить проект для выгрузки и запуска на сервере, без нам потребуется Docker в котором будет каждый из наших серверов.
 
-```sh
-npm run build
-```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
-
-## Server project Setup
-
-### For .Net core CLI
-
-Выполнять в папке ```OOP_PROJECT.Server```
-
-```sh
-dotnet tool install --global dotnet-ef
-dotnet ef migrations add InitialCreate
-dotnet ef database update
-```
-
-Or
-
-### For Visual studio Package Manager Console
-
-```sh
-Install-Package Microsoft.EntityFrameworkCore
-Add-Migration InitialCreate
-Update-Database
-```
-
+1. Нажмите на стрелочку рядом с кнопкой запуска проекта
+	![[ConfigureProjectIcon.png]]
+2. Выберите "Настройка начальных проектов"
+3. . В разделе "Запускаемый проект" выберите "Текущий выбор"
+	![[Current selection.png]]
+4. Для каждого сервера asp .net core выберите вариант запуска Container (Dockerfile)
+	![[Pasted image 20240509215158.png]]
+5. Повторите пункт 3, 4,
+6. Выберите вариант "Несколько запускаемых проектов" в разделе "Запускаемый проект".
+	Для каждого из проектов выберите действие "Запуск"
+	![[Pasted image 20240509215407.png]]
+7. Проект готов к сборке
 ### TroubleShoot
 
 В случае проблем с сертификатами https:

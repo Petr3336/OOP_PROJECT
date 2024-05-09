@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,7 @@ var configuration = new ConfigurationBuilder()
 
 // Connecting to local SQLite db.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(configuration.GetConnectionString("DbConnection")));
+        options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -20,13 +22,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Добавление доверенных прокси
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.KnownProxies.Add(IPAddress.Parse("localhost:80"));
+    });
+
+}
+
 var app = builder.Build();
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+//app.UseDefaultFiles();
+//app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -39,6 +51,12 @@ if (app.Environment.IsDevelopment())
 
         // Логирование информации об исходящем ответе
         Console.WriteLine($"Response: {context.Response.StatusCode}");
+    });
+} else
+{
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
     });
 }
 

@@ -11,7 +11,20 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["oop_project.client/nuget.config", "oop_project.client/"]
 COPY ["OOP_PROJECT.Server/OOP_PROJECT.Server.csproj", "OOP_PROJECT.Server/"]
-COPY ["oop_project.client/oop_project.client.esproj", "oop_project.client/"]
+ENV ASPNETCORE_ENVIRONMENT=$BUILD_CONFIGURATION
+#COPY ["oop_project.client/oop_project.client.esproj", "oop_project.client/"]
+#ENV NODE_VERSION=20.13.0
+#RUN apt install -y curl
+#RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+#ENV NVM_DIR=/root/.nvm
+#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+#RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+#RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+#ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+#RUN node --version
+#RUN npm --version
+#RUN dotnet tool install --global dotnet-ef
+#ENV PATH="${PATH}:/root/.dotnet/tools"
 RUN dotnet restore "./OOP_PROJECT.Server/OOP_PROJECT.Server.csproj"
 COPY . .
 WORKDIR "/src/OOP_PROJECT.Server"
