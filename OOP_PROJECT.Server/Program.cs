@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -13,8 +14,8 @@ var configuration = new ConfigurationBuilder()
             .Build();
 
 // Connecting to local SQLite db.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//        options.UseSqlServer(builder.Environment.IsDevelopment() ? configuration.GetConnectionString("DbConnectionDev") : configuration.GetConnectionString("DbConnection")));
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -31,6 +32,8 @@ if (builder.Environment.IsDevelopment())
     });
 
 }
+
+builder.AddSqlServerDbContext<ApplicationDbContext>("NotesDb");
 
 var app = builder.Build();
 
