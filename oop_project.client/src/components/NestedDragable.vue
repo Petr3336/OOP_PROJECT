@@ -1,4 +1,3 @@
-
 <template>
   <draggable
     class="dragArea"
@@ -11,7 +10,7 @@
     <template #item="{ element }">
       <div>
         <v-list-item
-          :prepend-icon="selectIcon(element)"
+          :prepend-icon="selectIcon(element.type)"
           :title="element.name"
           :key="element.id"
           :to="computeRoute(element.id, element.type)"
@@ -21,9 +20,9 @@
         <nested-draggable
           v-if="element.type == 0"
           class="ml-4"
-          :folders="element.tasks"
+          :folders="element.childrenNavigation"
           :onUpdate="onUpdate"
-          :empty="element.tasks.length == 0"
+          :empty="element.childrenNavigation.length == 0"
         />
         
       </div>
@@ -39,8 +38,13 @@
   </draggable>
 </template>
 <script>
+import { useNavigationStore } from '../stores/navigationStore.js';
 import draggable from "vuedraggable";
 export default {
+  setup() {
+    const navigationStore = useNavigationStore();
+    return { navigationStore };
+  },
   props: {
     folders: {
       required: true,
@@ -55,13 +59,15 @@ export default {
       type: Function,
     },
   },
+  mounted() {
+  },
   components: {
     draggable,
   },
   name: "nested-draggable",
   methods: {
-    selectIcon(el) {
-      switch (el.type) {
+    selectIcon(type) {
+      switch (type) {
         case 0:
           return "mdi-folder";
         case 1:

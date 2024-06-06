@@ -8,19 +8,19 @@ class NoteList {
   }
 }
 
-export const useFolderStore = defineStore('folder', {
+export const useFolderStore = defineStore('noteListStore', {
   state: () => ({
     noteList: []
   }),
   actions: {
-    getFolderById(id) {
-      return this.folders.find(folder => folder.id === id);
+    getNoteList(id) {
+      return this.noteList.find(folder => folder.id === id);
     },
     getNotesListsById(id) {
-      const folder = this.getFolderById(id);
-      return folder ? folder.childrenNotesLists : [];
+      const Notes = this.getNoteList(id);
+      return Notes ? Notes.childrenNotesLists : [];
     },
-    createNotesList(id, text, position, parent) {
+    createNotesList(id, text, position) {
       const newNoteList = new NoteList(id, text, position);
       this.noteList.push(newNoteList);
       return newNoteList;

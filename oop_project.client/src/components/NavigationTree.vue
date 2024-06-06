@@ -1,39 +1,34 @@
 <script setup>
-import { defineStore } from "pinia";
+import { useNavigationStore } from "../stores/navigationStore.js";
 import { ref, watch } from "vue";
 
-const useFolderStore = defineStore('folder', {
-  state: () => ({
-    folders: [{
-        id: 0,
-        name: "1",
-        position: "0",
-        parent: 0,
-        childrenFolders: [],
-        childrenNotesLists: [],
-      }]
-  }),
-});
+const navigationStore = useNavigationStore();
 
-const folderStore = useFolderStore();
+const navigation = ref(navigationStore.navigation);
 
-const folders = ref(folderStore.folders);
+const updatePosition = (navigation) => {
+  // Обновляем позиции элементов в хранилище
+  navigation.forEach((item, index) => {
+    navigationStore.updateNavigationPosition(item.id, index);
+  });
+};
 
-watch(folders, (newFolders) => {
-  folderStore.folders = newFolders;
-}, { deep: true });
-
-
-
+watch(
+  navigation,
+  (newNavigation) => {
+    navigationStore.navigation = newNavigation;
+  },
+  { deep: true }
+);
 </script>
 <template>
   <div>
     <div>
       <v-list padding bordered class="rounded-borders">
         <nested-draggable
-          :folders="folders"
+          :folders="navigation"
           :empty="false"
-          :onUpdate="updateOrder"
+          :onUpdate="updatePosition(navigation)"
         />
       </v-list>
     </div>
@@ -43,6 +38,7 @@ watch(folders, (newFolders) => {
 </template>
 
 <script>
+import { useNavigationStore } from "../stores/navigationStore.js";
 import nestedDraggable from "./NestedDragable.vue";
 export default {
   name: "nested-example",
@@ -51,50 +47,16 @@ export default {
   components: {
     nestedDraggable,
   },
+  setup() {},
   data() {
-    return {
-      list: [
-        {
-          id: 0,
-          type: 0,
-          name: "task 1",
-          tasks: [
-            {
-              id: 1,
-              type: 0,
-              name: "task 2",
-              tasks: [],
-            },
-          ],
-        },
-        {
-          id: 2,
-          type: 0,
-          name: "task 3",
-          tasks: [
-            {
-              id: 3,
-              type: 1,
-              name: "task 4",
-              tasks: [],
-            },
-          ],
-        },
-        {
-          id: 4,
-          type: 1,
-          name: "task 5",
-          tasks: [],
-        },
-      ],
-    };
+    return {};
   },
   methods: {
-    updateOrder() {
-      this.list.forEach((item, index) => {
-        console.log("e");
-        item.order = index;
-        this.list.length;
+    updatePosition() {
+      console.log(this.navigation);
+      // Обновляем позиции элементов в хранилище
+      this.navigation.forEach((item, index) => {
+        this.navigationStore.updateNavigationPosition(item.id, index);
       });
     },
   },
