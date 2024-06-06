@@ -49,7 +49,7 @@ export default {
             try {
                 const response = await axios.get(this.apiUrl);
                 this.products = response.data;
-                 response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -58,7 +58,7 @@ export default {
             try {
                 const response = await axios.post(this.apiUrl, product);
                 this.products.push(response.data);
-                 response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -66,7 +66,7 @@ export default {
         async updateProduct(id, product) {
             try {
                 const response = await axios.put(`${this.apiUrl}/${id}`, product);
-                 response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -74,7 +74,7 @@ export default {
         async deleteProduct(id) {
             try {
                 const response = await axios.delete(`${this.apiUrl}/${id}`);
-                 response.data);
+                console.log(response.data);
                 this.getProducts();
             } catch (error) {
                 console.error(error);

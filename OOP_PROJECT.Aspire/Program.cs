@@ -23,4 +23,20 @@ builder.AddNpmApp("vue", "../oop_project.client")
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 
+
+builder.AddProject<Projects.PasswordManagerService>("passwordmanagerservice")
+    .WithReference(NotesDb);
+
+
+
+
+
+//builder.AddProject<Projects.AuthorizationService>("authorizationservice");
+
+
+
+
+builder.AddProject<Projects.NotesService>("notesservice")
+    .WithReference(NotesDb);
+
 builder.Build().Run();

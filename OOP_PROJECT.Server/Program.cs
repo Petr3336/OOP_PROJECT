@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,10 @@ if (builder.Environment.IsDevelopment())
 
 }
 
-builder.AddSqlServerDbContext<ApplicationDbContext>("NotesDb");
+if (builder.Environment.IsDevelopment())
+    builder.AddSqlServerDbContext<ApplicationDbContext>("NotesDb");
+else
+    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
 
 var app = builder.Build();
 

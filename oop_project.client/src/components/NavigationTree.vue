@@ -1,34 +1,39 @@
 <script setup>
-import { useNavigationStore } from "../stores/navigationStore.js";
+import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 
-const navigationStore = useNavigationStore();
+const useFolderStore = defineStore('folder', {
+  state: () => ({
+    folders: [{
+        id: 0,
+        name: "1",
+        position: "0",
+        parent: 0,
+        childrenFolders: [],
+        childrenNotesLists: [],
+      }]
+  }),
+});
 
-const navigation = ref(navigationStore.navigation);
+const folderStore = useFolderStore();
 
-const updatePosition = (navigation) => {
-  // Обновляем позиции элементов в хранилище
-  navigation.forEach((item, index) => {
-    navigationStore.updateNavigationPosition(item.id, index);
-  });
-};
+const folders = ref(folderStore.folders);
 
-watch(
-  navigation,
-  (newNavigation) => {
-    navigationStore.navigation = newNavigation;
-  },
-  { deep: true }
-);
+watch(folders, (newFolders) => {
+  folderStore.folders = newFolders;
+}, { deep: true });
+
+
+
 </script>
 <template>
   <div>
     <div>
       <v-list padding bordered class="rounded-borders">
         <nested-draggable
-          :folders="navigation"
+          :folders="folders"
           :empty="false"
-          :onUpdate="updatePosition(navigation)"
+          :onUpdate="updateOrder"
         />
       </v-list>
     </div>
@@ -38,7 +43,6 @@ watch(
 </template>
 
 <script>
-import { useNavigationStore } from "../stores/navigationStore.js";
 import nestedDraggable from "./NestedDragable.vue";
 export default {
   name: "nested-example",
@@ -47,16 +51,50 @@ export default {
   components: {
     nestedDraggable,
   },
-  setup() {},
   data() {
-    return {};
+    return {
+      list: [
+        {
+          id: 0,
+          type: 0,
+          name: "task 1",
+          tasks: [
+            {
+              id: 1,
+              type: 0,
+              name: "task 2",
+              tasks: [],
+            },
+          ],
+        },
+        {
+          id: 2,
+          type: 0,
+          name: "task 3",
+          tasks: [
+            {
+              id: 3,
+              type: 1,
+              name: "task 4",
+              tasks: [],
+            },
+          ],
+        },
+        {
+          id: 4,
+          type: 1,
+          name: "task 5",
+          tasks: [],
+        },
+      ],
+    };
   },
   methods: {
-    updatePosition() {
-      console.log(this.navigation);
-      // Обновляем позиции элементов в хранилище
-      this.navigation.forEach((item, index) => {
-        this.navigationStore.updateNavigationPosition(item.id, index);
+    updateOrder() {
+      this.list.forEach((item, index) => {
+        console.log("e");
+        item.order = index;
+        this.list.length;
       });
     },
   },
