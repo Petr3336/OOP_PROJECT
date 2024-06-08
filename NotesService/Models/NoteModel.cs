@@ -2,7 +2,7 @@
 
 namespace NotesService.Models
 {
-    public class Note
+    public class NoteModel
     {
         public int Id { get; set; }
 

@@ -15,6 +15,10 @@ var NotesDb = builder.AddSqlServer("sqlserver")
     // Add the database to the application model so that it can be referenced by other resources.
     .AddDatabase("NotesDb");
 
+builder.AddProject<Projects.NotesService>("notesservice")
+    .WithReference(NotesDb);
+
+
 builder.AddProject<Projects.OOP_PROJECT_Server>("apiservice")
     .WithReference(NotesDb);
 
@@ -36,7 +40,5 @@ builder.AddProject<Projects.PasswordManagerService>("passwordmanagerservice")
 
 
 
-builder.AddProject<Projects.NotesService>("notesservice")
-    .WithReference(NotesDb);
 
 builder.Build().Run();

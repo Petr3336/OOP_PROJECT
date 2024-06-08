@@ -18,14 +18,14 @@ namespace NotesService.Controllers
 
         // GET: api/notes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Note>>> Get()
+        public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes()
         {
             return await _context.Notes.ToListAsync();
         }
 
         // GET: api/notes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Note>> Get(int id)
+        public async Task<ActionResult<NoteModel>> GetNote(int id)
         {
             var note = await _context.Notes.FindAsync(id);
 
@@ -39,32 +39,33 @@ namespace NotesService.Controllers
 
         // POST: api/notes
         [HttpPost]
-        public async Task<ActionResult<Note>> Post(Note note)
+        public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
         {
             _context.Notes.Add(note);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = note.Id }, note);
+            return CreatedAtAction(nameof(GetNote), new { id = note.Id }, note);
         }
 
         // PUT: api/notes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Note note)
+        public async Task<IActionResult> PutNote([FromBody] NoteModel note)
         {
-            if (id != note.Id)
+            if (note == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(note).State = EntityState.Modified;
+            _context.Notes.Add(note);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
+
             catch (DbUpdateConcurrencyException)
             {
-                if (!NoteExists(id))
+                if (!NoteExists(note.Id))
                 {
                     return NotFound();
                 }
@@ -74,7 +75,7 @@ namespace NotesService.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetNote", new { id = note.Id }, note);
         }
 
         // DELETE: api/notes/5
