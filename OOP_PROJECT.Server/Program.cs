@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +15,8 @@ var configuration = new ConfigurationBuilder()
             .Build();
 
 // Connecting to local SQLite db.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(configuration.GetConnectionString("DbConnection")));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//        options.UseSqlServer(builder.Environment.IsDevelopment() ? configuration.GetConnectionString("DbConnectionDev") : configuration.GetConnectionString("DbConnection")));
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -20,13 +24,28 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Добавление доверенных прокси
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.KnownProxies.Add(IPAddress.Parse("localhost:80"));
+    });
+
+}
+
+if (builder.Environment.IsDevelopment())
+    builder.AddSqlServerDbContext<ApplicationDbContext>("NotesDb");
+else
+    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
+
 var app = builder.Build();
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+//app.UseDefaultFiles();
+//app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -40,6 +59,12 @@ if (app.Environment.IsDevelopment())
         // Логирование информации об исходящем ответе
         Console.WriteLine($"Response: {context.Response.StatusCode}");
     });
+} else
+{
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    });
 }
 
 app.UseHttpsRedirection();
@@ -47,7 +72,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.MapFallbackToFile("/index.html");
 
 app.Run();

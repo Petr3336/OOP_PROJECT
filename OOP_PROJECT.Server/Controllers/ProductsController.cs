@@ -52,6 +52,7 @@ public class ProductsController : ControllerBase
         {
             await _context.SaveChangesAsync();
         }
+
         catch (DbUpdateException)
         {
             if (ProductExists(product.Id))
