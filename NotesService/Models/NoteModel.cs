@@ -4,6 +4,7 @@ namespace NotesService.Models
 {
     public class NoteModel
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -15,10 +16,10 @@ namespace NotesService.Models
 
         [Required]
         public DateTime Date { get; set; }
-
         [Required]
         public string Category { get; set; } = string.Empty;
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
     }
 }

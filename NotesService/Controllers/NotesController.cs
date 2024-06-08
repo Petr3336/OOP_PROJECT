@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using NotesService.Data;
 using NotesService.Models;
-
 namespace NotesService.Controllers
 {
     [ApiController]
@@ -15,6 +14,7 @@ namespace NotesService.Controllers
         {
             _context = context;
         }
+
 
         // GET: api/notes
         [HttpGet]
@@ -49,15 +49,23 @@ namespace NotesService.Controllers
 
         // PUT: api/notes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutNote([FromBody] NoteModel note)
+        public async Task<IActionResult> PutNote(int id, [FromBody] NoteModel note)
         {
-            if (note == null)
+            var existingNote = await _context.Notes.FindAsync(id);
+
+            if (existingNote == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+            existingNote.Title = note.Title;
+            existingNote.Content = note.Content;
+            existingNote.Category = note.Category;
+            existingNote.MediaUrl = note.MediaUrl;
+            existingNote.UpdatedAt = DateTime.Now;
 
-            _context.Notes.Add(note);
 
+
+            _context.Entry(existingNote).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
@@ -75,7 +83,7 @@ namespace NotesService.Controllers
                 }
             }
 
-            return CreatedAtAction("GetNote", new { id = note.Id }, note);
+            return NoContent();
         }
 
         // DELETE: api/notes/5
