@@ -8,6 +8,7 @@ namespace NotesService.Controllers
     [Route("[controller]")]
     public class NotesController : ControllerBase
     {
+
         private readonly NotesContext _context;
 
         public NotesController(NotesContext context)
@@ -20,14 +21,14 @@ namespace NotesService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes()
         {
-            return await _context.Folderts.ToListAsync();
+            return await _context.Notes.ToListAsync();
         }
 
         // GET: api/notes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<NoteModel>> GetNote(int id)
         {
-            var note = await _context.Folderts.FindAsync(id);
+            var note = await _context.Notes.FindAsync(id);
 
             if (note == null)
             {
@@ -41,7 +42,23 @@ namespace NotesService.Controllers
         [HttpPost]
         public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
         {
-            _context.Folderts.Add(note);
+            if (note == null)
+            {
+                return BadRequest(new { message = "Note cannot be null" });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            // Создание новой папки
+            var folder = new FolderModel();
+            _context.Folders.Add(folder);
+            await _context.SaveChangesAsync();
+
+            // Привязка заметки к папке
+            note.FolderId = folder.Id;
+            _context.Notes.Add(note);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetNote), new { id = note.Id }, note);
@@ -51,7 +68,7 @@ namespace NotesService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutNote(int id, [FromBody] NoteModel note)
         {
-            var existingNote = await _context.Folderts.FindAsync(id);
+            var existingNote = await _context.Notes.FindAsync(id);
 
             if (existingNote == null)
             {
@@ -90,13 +107,13 @@ namespace NotesService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var note = await _context.Folderts.FindAsync(id);
+            var note = await _context.Notes.FindAsync(id);
             if (note == null)
             {
                 return NotFound();
             }
 
-            _context.Folderts.Remove(note);
+            _context.Notes.Remove(note);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -104,7 +121,7 @@ namespace NotesService.Controllers
 
         private bool NoteExists(int id)
         {
-            return _context.Folderts.Any(e => e.Id == id);
+            return _context.Notes.Any(e => e.Id == id);
         }
     }
 }
