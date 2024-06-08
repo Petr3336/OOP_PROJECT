@@ -21,24 +21,38 @@ watch(
   { deep: true }
 );
 </script>
-<template>
-  <div>
-    <div>
-      <v-list padding bordered class="rounded-borders">
-        <nested-draggable
-          :folders="navigation"
-          :empty="false"
-          :onUpdate="updatePosition(navigation)"
-        />
-      </v-list>
-    </div>
-
-    <rawDisplayer class="col-3" :value="list" title="List" />
-  </div>
+<template class="d-flex flex-column">
+  <v-list-item
+    class=""
+    height="64px"
+    :elevation="2"
+    title="Ваши заметки"
+  ></v-list-item>
+  <v-list :height="$vuetify.display.height-128" bordered class="rounded-borders pa-0 overflow-y-auto">
+    <nested-draggable
+      :folders="navigation"
+      
+      :empty="false"
+      :onUpdate="updatePosition(navigation)"
+    />
+  </v-list>
+  <v-list-item
+    class="mt-auto position-sticky bottom-0 left-0 bg-white"
+    height="64px"
+    width="100%"
+    :elevation="3"
+    title="Ваши заметки"
+  >
+    <template #append>
+      <v-btn flat size="38px" icon>
+        <v-icon>mdi-note-plus</v-icon>
+      </v-btn>
+    </template>
+  </v-list-item>
+  
 </template>
 
 <script>
-import { useNavigationStore } from "../stores/navigationStore.js";
 import nestedDraggable from "./NestedDragable.vue";
 export default {
   name: "nested-example",

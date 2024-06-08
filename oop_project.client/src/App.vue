@@ -7,23 +7,23 @@ const NavigationTree = defineAsyncComponent(() => import('./components/Navigatio
 
 
 <template>
-  <v-layout>
+  <v-app>
     
-    <v-navigation-drawer v-model="drawer" width="350">
+    <v-navigation-drawer v-model="drawer" width="350" app>
       <NavigationTree />
     </v-navigation-drawer>
 
-    <v-app-bar>
+    <v-app-bar :elevation="2">
       <ToolBar :changeDrawerState="changeDrawerState"/>
     </v-app-bar>
 
     
 
-    <v-main class="d-flex align-center justify-center">
+    <v-main>
       <router-view />
     </v-main>
 
-    </v-layout>
+    </v-app>
 </template>
 
 <script>
@@ -36,3 +36,15 @@ const NavigationTree = defineAsyncComponent(() => import('./components/Navigatio
     }
   }
 </script>
+<style>
+
+#app,.body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  display: block;
+}
+</style>
