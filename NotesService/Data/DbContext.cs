@@ -11,6 +11,7 @@ namespace NotesService.Data
                 Database.EnsureCreated();
             }
 
-        public DbSet<NoteModel> Notes { get; set; }
+        public DbSet<NoteModel> Folderts { get; set; }
+        public DbSet<FolderModel> Folders { get; set; }
     }
 }

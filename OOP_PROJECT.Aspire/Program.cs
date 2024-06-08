@@ -28,8 +28,8 @@ builder.AddNpmApp("vue", "../oop_project.client")
     .PublishAsDockerFile();
 
 
-builder.AddProject<Projects.PasswordManagerService>("passwordmanagerservice")
-    .WithReference(NotesDb);
+//builder.AddProject<Projects.PasswordManagerService>("passwordmanagerservice")
+  //  .WithReference(NotesDb);
 
 
 

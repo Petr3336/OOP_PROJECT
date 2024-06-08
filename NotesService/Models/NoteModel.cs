@@ -9,7 +9,7 @@ namespace NotesService.Models
 
         [Required]
         public string Title { get; set; } = string.Empty;
-
+        //public int FolderId { get; set; }
         public string? Content { get; set; }
 
         public string? MediaUrl { get; set; }
