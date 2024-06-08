@@ -3,6 +3,11 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+#docker
+docker-compose.yml text eol=lf
+Dockerfile eol=lf
+*.sh text eol=lf
+
 # dotenv files
 .env
 
