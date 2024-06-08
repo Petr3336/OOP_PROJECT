@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace NotesService.Models
-{
+{///<summary>
+    ///folders
+    ///</summary>
     public class FolderModel
     {
         public int Id { get; set; }
