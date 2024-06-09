@@ -11,15 +11,6 @@ namespace NotesService.Data
                 Database.EnsureCreated();
 
             }
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-
-        //    modelBuilder.Entity<FolderModel>()
-        //        .HasMany(f => f.Notes)
-        //        .WithOne(n => n.Folder)
-        //        .HasForeignKey(n => n.FolderId);
-        // фейк }
 
         public DbSet<NoteModel> Notes { get; set; }
         public DbSet<FolderModel> Folders { get; set; }

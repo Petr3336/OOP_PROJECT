@@ -20,8 +20,9 @@ namespace NotesService.Controllers
             return await _context.Folders.ToListAsync();
         }
         [HttpPost]
-        public async Task<ActionResult<FolderModel>> PostFolder(FolderModel folder)
+        public async Task<ActionResult<FolderModel>> PostFolder(FolderModel folder/*, NoteModel noteModel*/)
         {
+            //_context.Notes.Add(noteModel);
             _context.Folders.Add(folder);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetFolder), new { id = folder.Id }, folder);
