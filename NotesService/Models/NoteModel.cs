@@ -20,7 +20,7 @@ namespace NotesService.Models
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-        public int FolderId { get; set; } // Новое свойство
-        public FolderModel Folder { get; set; } = null!; // Новое свойство
+     //фейк   public int FolderId { get; set; } // Новое свойство
+     //фейк   public FolderModel Folder { get; set; } = null!; // Новое свойство
     }
 }

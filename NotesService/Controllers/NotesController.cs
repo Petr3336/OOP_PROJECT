@@ -41,23 +41,23 @@ namespace NotesService.Controllers
         // POST: api/notes
         [HttpPost]
         public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
-        {
-            if (note == null)
-            {
-                return BadRequest(new { message = "Note cannot be null" });
-            }
+        {//фейк
+            //if (note == null)
+            //{
+            //    return BadRequest(new { message = "Note cannot be null" });
+            //}
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            // Создание новой папки
-            var folder = new FolderModel();
-            _context.Folders.Add(folder);
-            await _context.SaveChangesAsync();
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+            //// Создание новой папки
+            //var folder = new FolderModel();
+            //_context.Folders.Add(folder);
+            //await _context.SaveChangesAsync();
 
-            // Привязка заметки к папке
-            note.FolderId = folder.Id;
+            //// Привязка заметки к папке
+            //note.FolderId = folder.Id;
             _context.Notes.Add(note);
             await _context.SaveChangesAsync();
 
