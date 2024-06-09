@@ -52,6 +52,7 @@ namespace NotesService.Controllers
             updatedFolder.FolderIds = folder.FolderIds;
             updatedFolder.NoteIds = folder.NoteIds;
             updatedFolder.UpdatedAt = DateTime.Now;
+            updatedFolder.HasSmthngInIt=folder.HasSmthngInIt;
 
 
 
