@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using NotesService.Data;
+using NotesService.Services.Class;
+using NotesService.Services.Interface;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +27,7 @@ if (builder.Environment.IsDevelopment())
     builder.AddSqlServerDbContext<NotesContext>("NotesDb");
 else
     builder.Services.AddDbContext<NotesContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
-
+builder.Services.AddScoped<INoteService, NoteService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

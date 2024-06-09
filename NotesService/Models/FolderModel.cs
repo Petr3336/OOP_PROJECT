@@ -12,6 +12,7 @@ namespace NotesService.Models
         public List<int>? NoteIds { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-       //фейк public ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
+        public virtual ICollection<FolderNoteLink> FolderNoteLinks { get; set; }
+        //фейк public ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
     }
 }

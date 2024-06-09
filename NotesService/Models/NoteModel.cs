@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace NotesService.Models
-{
+{/// <summary>
+/// NOTES
+/// </summary>
     public class NoteModel
     {
         [Key]
@@ -20,7 +22,8 @@ namespace NotesService.Models
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-     //фейк   public int FolderId { get; set; } // Новое свойство
-     //фейк   public FolderModel Folder { get; set; } = null!; // Новое свойство
+        public virtual ICollection<FolderNoteLink> FolderNoteLinks { get; set; }
+        //фейк   public int FolderId { get; set; } // Новое свойство
+        //фейк   public FolderModel Folder { get; set; } = null!; // Новое свойство
     }
 }
