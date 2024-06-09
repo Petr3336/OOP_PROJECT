@@ -13,6 +13,6 @@ namespace NotesService.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         public bool HasSmthngInIt { get; set; } = false;
-       //фейк public ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
+        public ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
     }
 }
