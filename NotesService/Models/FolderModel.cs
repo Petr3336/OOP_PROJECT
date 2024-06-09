@@ -8,11 +8,12 @@ namespace NotesService.Models
     {
         public int Id { get; set; }
         public string FolderName { get; set; } = "NewFolder";
-        public List<int>? FolderIds { get; set; }
-        public List<int>? NoteIds { get; set; }
+        //public List<int>? FolderIds { get; set; }
+        //public List<int>? NoteIds { get; set; }
+        public List<NoteModel> Notes { get; set; } = new();
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-        public virtual ICollection<FolderNoteLink> FolderNoteLinks { get; set; }
+        //public virtual ICollection<FolderNoteLink> FolderNoteLinks { get; set; }
         //фейк public ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
     }
 }

@@ -22,7 +22,7 @@ namespace NotesService.Models
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-        public virtual ICollection<FolderNoteLink> FolderNoteLinks { get; set; }
+       //fake public virtual ICollection<FolderNoteLink> FolderNoteLinks { get; set; }
         //фейк   public int FolderId { get; set; } // Новое свойство
         //фейк   public FolderModel Folder { get; set; } = null!; // Новое свойство
     }

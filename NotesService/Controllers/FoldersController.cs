@@ -48,8 +48,9 @@ namespace NotesService.Controllers
                 return NotFound();
             }
             updatedFolder.FolderName = folder.FolderName;
-            updatedFolder.FolderIds = folder.FolderIds;
-            updatedFolder.NoteIds = folder.NoteIds;
+            updatedFolder.Notes = folder.Notes;
+            //updatedFolder.FolderIds = folder.FolderIds;
+            //updatedFolder.NoteIds = folder.NoteIds;
             updatedFolder.UpdatedAt = DateTime.Now;
 
 

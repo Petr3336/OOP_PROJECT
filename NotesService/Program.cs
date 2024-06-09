@@ -27,7 +27,7 @@ if (builder.Environment.IsDevelopment())
     builder.AddSqlServerDbContext<NotesContext>("NotesDb");
 else
     builder.Services.AddDbContext<NotesContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
-builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<IFolderService, FolderService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

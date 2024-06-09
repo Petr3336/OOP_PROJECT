@@ -9,19 +9,19 @@ namespace NotesService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FakeController : ControllerBase
+    public class FolderServiceController : ControllerBase
     {
-        private readonly INoteService _noteService;
+        private readonly IFolderService _folderService;
 
-        public FakeController(INoteService noteService)
+        public FolderServiceController(IFolderService folderService)
         {
-            _noteService = noteService;
+            _folderService = folderService;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFolderWithNotes(int id)
         {
-            var folder = await _noteService.GetFolderWithNotesAsync(id);
+            var folder = await _folderService.GetFolderWithNotesAsync(id);
             if (folder == null)
             {
                 return NotFound();
@@ -29,17 +29,17 @@ namespace NotesService.Controllers
             return Ok(folder);
         }
 
-        [HttpPost("{folderId}/notes/{noteId}")]
-        public async Task<IActionResult> AddNoteToFolder(int folderId, int noteId)
+        [HttpPost("{folderId}/notes")]
+        public async Task<IActionResult> AddNoteToFolder(int folderId, [FromBody] NoteModel note)
         {
-            await _noteService.ConnectFolderToNoteAsync(folderId, noteId);
+            await _folderService.AddNoteToFolderAsync(folderId, note);
             return NoContent();
         }
 
         [HttpDelete("{folderId}/notes/{noteId}")]
         public async Task<IActionResult> RemoveNoteFromFolder(int folderId, int noteId)
         {
-            await _noteService.DisconnectFolderFromNoteAsync(folderId, noteId);
+            await _folderService.RemoveNoteFromFolderAsync(folderId, noteId);
             return NoContent();
         }
     }
