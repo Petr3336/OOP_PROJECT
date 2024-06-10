@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotesService.Data;
 using NotesService.Models;
+using System.Security.Claims;
 namespace NotesService.Controllers
 {
+    
     [ApiController]
     [Route("[controller]")]
     public class NotesController : ControllerBase
@@ -17,6 +20,7 @@ namespace NotesService.Controllers
 
 
         // GET: api/notes
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes()
         {
@@ -24,6 +28,7 @@ namespace NotesService.Controllers
         }
 
         // GET: api/notes/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<NoteModel>> GetNote(int id)
         {
@@ -38,6 +43,7 @@ namespace NotesService.Controllers
         }
 
         // POST: api/notes
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
         {

@@ -2,7 +2,7 @@ using Aspire.Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = DistributedApplication.CreateBuilder(args);
-
+var Redis = builder.AddRedis("JWTlist", 6770);
 // SQL Server container is configured with an auto-generated password by default
 // but doesn't support any auto-creation of databases or running scripts on startup so we have to do it manually.
 var NotesDb = builder.AddSqlServer("sqlserver")
@@ -28,7 +28,9 @@ builder.AddNpmApp("vue", "../oop_project.client")
     .PublishAsDockerFile();
 
 
-builder.AddProject<Projects.PasswordManagerService>("passwordmanagerservice")
+
+
+builder.AddProject<Projects.Authorization>("Authorization")
     .WithReference(NotesDb);
 
 
