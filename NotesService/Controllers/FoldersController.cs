@@ -6,7 +6,7 @@ using NotesService.Models;
 namespace NotesService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/notesservice/[controller]")]
     public class FoldersController : ControllerBase
     {
         private readonly NotesContext _context;
@@ -14,12 +14,12 @@ namespace NotesService.Controllers
         {
             _context = context;
         }
-        [HttpGet]
+        [HttpGet("getfolders")]
         public async Task<ActionResult<IEnumerable<FolderModel>>> GetFolder()
         {
             return await _context.Folders.ToListAsync();
         }
-        [HttpPost]
+        [HttpPost("createfolder")]
         public async Task<ActionResult<FolderModel>> PostFolder(FolderModel folder/*, NoteModel noteModel*/)
         {
             //_context.Notes.Add(noteModel);
@@ -27,7 +27,7 @@ namespace NotesService.Controllers
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetFolder), new { id = folder.Id }, folder);
         }
-        [HttpGet("{id}")]
+        [HttpGet("getfolderbyid/{id}")]
         public async Task<ActionResult<FolderModel>> GetFolders(int id)
         {
             var foler = await _context.Folders.FindAsync(id);
@@ -39,7 +39,7 @@ namespace NotesService.Controllers
 
             return foler;
         }
-        [HttpPut("{id}")]
+        [HttpPut("updatefolderbyid/{id}")]
         public async Task<IActionResult> PutFolder(int id, [FromBody] FolderModel folder)
         {
             var updatedFolder = await _context.Folders.FindAsync(id);
@@ -76,7 +76,7 @@ namespace NotesService.Controllers
 
             return NoContent();
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("deletefolderbyid/{id}")]
         public async Task<IActionResult> DeleteFolder(int id)
         {
             var folder = await _context.Folders.FindAsync(id);

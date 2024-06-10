@@ -12,18 +12,25 @@ namespace NotesService.Data
 
             }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<FolderModel>()
-                .HasMany(f => f.Notes)
-                .WithOne()
-                .HasForeignKey("FolderId")
-                .OnDelete(DeleteBehavior.Cascade);
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<FolderModel>()
+        //        .HasOne(f=>f.NoteList)
+        //        .WithOne()
+        //        .HasForeignKey("FolderIdls")
+        //        .OnDelete(DeleteBehavior.Cascade);
 
-            base.OnModelCreating(modelBuilder);
-        }
+        //    modelBuilder.Entity<NoteListModel>()
+        //        .HasMany(l=>l.Notes)
+        //        .WithOne()
+        //        .HasForeignKey("NoteListId")
+        //        .OnDelete(DeleteBehavior.Cascade);
+
+        //    base.OnModelCreating(modelBuilder);
+        //}
 
         public DbSet<NoteModel> Notes { get; set; }
         public DbSet<FolderModel> Folders { get; set; }
+        public DbSet<NoteListModel> NoteLists { get; set; }
     }
 }

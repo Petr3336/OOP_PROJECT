@@ -8,7 +8,7 @@ namespace NotesService.Controllers
 {
     
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/notesservice/[controller]")]
     public class NotesController : ControllerBase
     {
 
@@ -21,16 +21,16 @@ namespace NotesService.Controllers
 
 
         // GET: api/notes
-        [Authorize]
-        [HttpGet]
+        //[Authorize]
+        [HttpGet("getnotes")]
         public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes()
         {
             return await _context.Notes.ToListAsync();
         }
 
         // GET: api/notes/5
-        [Authorize]
-        [HttpGet("{id}")]
+        //[Authorize]
+        [HttpGet("getnotebyid/{id}")]
         public async Task<ActionResult<NoteModel>> GetNote(int id)
         {
             var note = await _context.Notes.FindAsync(id);
@@ -44,8 +44,8 @@ namespace NotesService.Controllers
         }
 
         // POST: api/notes
-        [Authorize]
-        [HttpPost]
+       // [Authorize]
+        [HttpPost("createnote")]
         public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
         {//фейк
             //if (note == null)
@@ -71,7 +71,7 @@ namespace NotesService.Controllers
         }
 
         // PUT: api/notes/5
-        [HttpPut("{id}")]
+        [HttpPut("updatenotebyid/{id}")]
         public async Task<IActionResult> PutNote(int id, [FromBody] NoteModel note)
         {
             var existingNote = await _context.Notes.FindAsync(id);
@@ -110,7 +110,7 @@ namespace NotesService.Controllers
         }
 
         // DELETE: api/notes/5
-        [HttpDelete("{id}")]
+        [HttpDelete("deletenotebyid/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var note = await _context.Notes.FindAsync(id);

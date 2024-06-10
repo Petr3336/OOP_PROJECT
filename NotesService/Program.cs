@@ -26,26 +26,26 @@ var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
 
-builder.Services.AddIdentity<UserModel, IdentityRole>()
-    .AddEntityFrameworkStores<AuthorizationContext>()
-    .AddDefaultTokenProviders();
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        //ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        //ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-    };
-});
+//builder.Services.AddIdentity<UserModel, IdentityRole>()
+//    .AddEntityFrameworkStores<AuthorizationContext>()
+//    .AddDefaultTokenProviders();
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = false,
+//        ValidateAudience = false,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        //ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//        //ValidAudience = builder.Configuration["Jwt:Audience"],
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+//    };
+//});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -75,7 +75,7 @@ builder.Services.AddSwaggerGen(options =>
 if (builder.Environment.IsDevelopment())
 {
     builder.AddSqlServerDbContext<NotesContext>("NotesDb");
-    builder.AddSqlServerDbContext<AuthorizationContext>("NotesDb");
+    //builder.AddSqlServerDbContext<AuthorizationContext>("NotesDb");
 }
 else
 {
@@ -92,7 +92,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
-app.UseJwtMiddleware();
+//app.UseJwtMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();
