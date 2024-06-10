@@ -1,5 +1,7 @@
+using Authorization.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NotesService.Data;
+using NotesService.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using System.Net.Http.Headers;
@@ -23,6 +26,9 @@ var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
 
+builder.Services.AddIdentity<UserModel, IdentityRole>()
+    .AddEntityFrameworkStores<AuthorizationContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,11 +61,26 @@ builder.Services.AddEndpointsApiExplorer();
 
 //    options.OperationFilter<SecurityRequirementsOperationFilter>();
 //});
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+}
+);
 if (builder.Environment.IsDevelopment())
+{
     builder.AddSqlServerDbContext<NotesContext>("NotesDb");
+    builder.AddSqlServerDbContext<AuthorizationContext>("NotesDb");
+}
 else
+{
     builder.Services.AddDbContext<NotesContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
+}
 
 var app = builder.Build();
 
@@ -70,8 +91,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
+app.UseAuthentication(); 
+app.UseJwtMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();

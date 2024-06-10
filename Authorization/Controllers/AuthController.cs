@@ -46,30 +46,38 @@ public class AuthController : ControllerBase
         if (result.Succeeded)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
-            var token = GenerateJwtToken(user);
+            var token = await GenerateJwtToken(user);
             return Ok(new { Token = token });
         }
 
         return Unauthorized(new { Message = "Invalid login attempt" });
     }
 
-    private string GenerateJwtToken(UserModel user)
+    private async Task<string> GenerateJwtToken(UserModel user)
     {
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName)
-        };
-
+        var Usser = user.Id;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var userClaims = await _userManager.GetClaimsAsync(user);
+
+        var claims = new List<Claim> {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("nameIdentifier", user.Id),
+            new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+            new Claim("actor", user.UserName),
+            new Claim("uid", user.Id),
+    };
+
+        claims.Union(userClaims);
+
 
         var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"]!,
+            audience: _configuration["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: creds);
+            signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
