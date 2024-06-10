@@ -1,27 +1,40 @@
 <template>
-  <v-navigation-drawer permanent rail location="right">
+  <v-navigation-drawer
+    permanent
+    rail
+    location="right"
+  >
     <v-list density="compact" nav>
+      <NewNoteDialog />
       <v-list-item
-        prepend-icon="mdi-view-dashboard"
-        @click="console.log('e')"
+        prepend-icon="mdi-note-edit"
+        @click="$emit('editMode')"
+        v-tooltip="'Перейти в режим изменения заметок'"
       ></v-list-item>
-
-      <v-list-item prepend-icon="mdi-forum"></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-note-minus"
+        @click="$emit('deleteMode')"
+        v-tooltip="'Перейти в режим удаления заметок'"
+      ></v-list-item>
     </v-list>
+
+    <!-- <div v-else class="d-flex justify-center">
+      <v-btn flat icon="mdi-note-plus" />
+      <v-btn flat icon="mdi-note-edit" />
+      <v-btn flat icon="mdi-note-minus" />
+    </div> -->
   </v-navigation-drawer>
 </template>
 <script>
+import NewNoteDialog from "./NewNoteDialog.vue";
 export default {
-  name: "NotesToolbar",
-  props: {
-    note: {
-      required: true,
-      type: Array,
-    },
+  components: {
+    NewNoteDialog,
   },
+  name: "NotesToolbar",
+  props: {},
   setup() {},
   mounted() {},
-  components: {},
   methods: {},
   computed: {},
 };

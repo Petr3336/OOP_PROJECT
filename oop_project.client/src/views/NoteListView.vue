@@ -1,18 +1,28 @@
 <template>
-  <v-container fluid full-width class="d-flex flex-column">
-    <noteComponent
-      v-if="noteList == undefined"
-      class="ma-6"
-    ></noteComponent>
+  <v-container fluid full-width class="d-flex flex-column-reverse justify-end h-100">
+    <noteComponent v-if="notes == undefined || notes.length == 0" class="ma-6"></noteComponent>
     <noteComponent
       v-else
       v-for="note in notes"
       v-bind:key="note.id"
       :note="note"
+      :editing="editing"
+      :deleting="deleting"
       class="ma-6"
     ></noteComponent>
   </v-container>
-  <notesToolbar />
+  <notesToolbar
+    @edit-mode="
+      {
+        (editing = !editing), (deleting = false);
+      }
+    "
+    @delete-mode="
+      {
+        (deleting = !deleting), (editing = false);
+      }
+    "
+  />
 </template>
 <script>
 import { useNotesListStore } from "../stores/NotesListsStore";
@@ -23,24 +33,19 @@ export default {
   name: "NoteListView",
   components: {
     noteComponent,
-    notesToolbar
+    notesToolbar,
   },
   data() {
     return {
-      noteList: "",
-      notes: [],
+      //noteList: "",
+      editing: false,
+      deleting: false,
     };
   },
   methods: {
-    updateNotes() {
-      this.noteList = this.noteListStore.getNoteList(this.$route.params.id);
-      if (this.noteList && this.noteList.notes) {
-        this.notes = this.noteList.notes.map((noteId) =>
-          this.notesStore.getNoteList(noteId)
-        );
-        this.notes.pop();
-      }
-    },
+    // updateNotesList() {
+    //   this.noteList = this.noteListStore.getNoteList(this.$route.params.id);
+    // },
   },
   setup() {
     const noteListStore = useNotesListStore();
@@ -48,19 +53,32 @@ export default {
     return { noteListStore, notesStore };
   },
   mounted() {
-    this.updateNotes();
+    // this.updateNotesList();
   },
   watch: {
-    "$route.params.id": {
-      handler(newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.updateNotes();
-        }
-      },
-      immediate: true,
+    // "$route.params.id": {
+    //   handler(newVal, oldVal) {
+    //     if (newVal !== oldVal) {
+    //       this.updateNotesList();
+    //     }
+    //   },
+    //   immediate: true,
+    // },
+  },
+  computed: {
+    noteList() {
+      return this.noteListStore.getNoteList(this.$route.params.id);
+    },
+    notes() {
+      if (this.noteList && this.noteList.notes) {
+        let noteList = this.noteList.notes.map((noteId) =>
+          this.notesStore.getNoteList(noteId)
+        );
+        return noteList;
+      }
+      return [];
     },
   },
-  computed: {},
 };
 </script>
 <style scoped></style>

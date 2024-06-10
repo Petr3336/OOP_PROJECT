@@ -21,6 +21,9 @@ import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loade
 const vuetify = createVuetify({
   components,
   directives,
+  theme: {
+    defaultTheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
 })
 
 const pinia = createPinia()

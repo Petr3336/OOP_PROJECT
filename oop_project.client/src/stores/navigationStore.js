@@ -1,37 +1,32 @@
 import { defineStore } from "pinia";
 
 class Navigation {
-  constructor(
-    id,
-    text,
-    position,
-    parent,
-    childrenNavigation = []
-  ) {
+  constructor(id, text, type, position) {
     this.id = id;
-    this.type = 0;
     this.name = text;
+    this.type = type;
     this.position = position;
-    this.parent = parent;
-    this.childrenNavigation = childrenNavigation;
+    this.childrenNavigation = [];
   }
 }
 
-export const useNavigationStore = defineStore("navigationStore", {
+export const useNavigationStore = defineStore("NavigationStore", {
   state: () => ({
     navigation: [
       {
         id: 0,
         type: 0,
         name: "f1",
-        position: "0",
+        collapsed: false,
+        position: 0,
         parent: 0,
         childrenNavigation: [
           {
             id: 1,
             type: 0,
             name: "f2",
-            position: "0",
+            collapsed: false,
+            position: 0,
             parent: 0,
             childrenNavigation: [],
           },
@@ -39,7 +34,8 @@ export const useNavigationStore = defineStore("navigationStore", {
             id: 2,
             type: 0,
             name: "f3",
-            position: "0",
+            collapsed: false,
+            position: 0,
             parent: 0,
             childrenNavigation: [],
           },
@@ -47,7 +43,7 @@ export const useNavigationStore = defineStore("navigationStore", {
             id: 0,
             type: 1,
             name: "n1",
-            position: "0",
+            position: 0,
             parent: 0,
             childrenNavigation: [],
           },
@@ -55,87 +51,7 @@ export const useNavigationStore = defineStore("navigationStore", {
             id: 1,
             type: 1,
             name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
-            parent: 0,
-            childrenNavigation: [],
-          },
-          {
-            id: 1,
-            type: 1,
-            name: "n2",
-            position: "0",
+            position: 0,
             parent: 0,
             childrenNavigation: [],
           },
@@ -169,8 +85,9 @@ export const useNavigationStore = defineStore("navigationStore", {
         navigation.position = newPosition;
       }
     },
-    createNavigation(id, text, position, parent) {
-      const newNavigation = new Navigation(id, text, position, parent);
+    createNoteNavigation(id, text) {
+      let positon = this.navigation.length;
+      const newNavigation = new Navigation(id, text, 1, positon);
       this.navigation.push(newNavigation);
       return newNavigation;
     },
