@@ -9,7 +9,6 @@ namespace NotesService.Models
 
         [Required]
         public string Title { get; set; } = string.Empty;
-
         public string? Content { get; set; }
 
         public string? MediaUrl { get; set; }
@@ -21,5 +20,8 @@ namespace NotesService.Models
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public int FolderId { get; set; }
+     //фейк   public int FolderId { get; set; } // Новое свойство
+     //фейк   public FolderModel Folder { get; set; } = null!; // Новое свойство
     }
 }

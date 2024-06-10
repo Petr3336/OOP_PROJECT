@@ -28,10 +28,9 @@ builder.AddNpmApp("vue", "../oop_project.client")
     .PublishAsDockerFile();
 
 
-
-
 builder.AddProject<Projects.Authorization>("Authorization")
     .WithReference(NotesDb);
+
 
 
 

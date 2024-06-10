@@ -11,6 +11,7 @@ namespace NotesService.Controllers
     [Route("[controller]")]
     public class NotesController : ControllerBase
     {
+
         private readonly NotesContext _context;
 
         public NotesController(NotesContext context)
@@ -46,7 +47,23 @@ namespace NotesService.Controllers
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
-        {
+        {//фейк
+            //if (note == null)
+            //{
+            //    return BadRequest(new { message = "Note cannot be null" });
+            //}
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+            //// Создание новой папки
+            //var folder = new FolderModel();
+            //_context.Folders.Add(folder);
+            //await _context.SaveChangesAsync();
+
+            //// Привязка заметки к папке
+            //note.FolderId = folder.Id;
             _context.Notes.Add(note);
             await _context.SaveChangesAsync();
 
