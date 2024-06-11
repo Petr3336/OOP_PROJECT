@@ -1,19 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NotesService.Models
-{///<summary>
-    ///folders
-    ///</summary>
+{
+    // Модель папки
     public class FolderModel
     {
-        public int Id { get; set; }
-        public string FolderName { get; set; } = "NewFolder";
-        public List<int>? FolderIds { get; set; }
-        public List<int>? NoteIds { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-        public bool HasSmthngInIt { get; set; } = false;
-        public ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
-        public NoteListModel NoteList { get; set; }
+        public Guid Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public string? Description { get; set; }
+        // Навигационное свойство для родительской папки
+        [ForeignKey("ParentFolderId")]
+        public virtual FolderModel? ParentFolder { get; set; }
+        // Коллекция подпапок
+        public virtual ICollection<Guid>? SubFolders { get; set; }
+        // Коллекция списков заметок в папке
+        public virtual ICollection<Guid>? NoteLists { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        // Навигационное свойство для пользователя
+        [ForeignKey("UserId")]
+        public virtual UserModel User { get; set; }
     }
 }

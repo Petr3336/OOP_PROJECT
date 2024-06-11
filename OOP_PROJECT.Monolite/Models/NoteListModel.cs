@@ -10,14 +10,17 @@ namespace NotesService.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<Guid> Notes { get; set; }
+
+        public virtual ICollection<NoteModel> Notes { get; set; } = new List<NoteModel>();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public Guid UserId { get; set; }
         [Required]
-        [ForeignKey("UserId")]
-        public UserModel User { get; set; }
+        public virtual UserModel User { get; set; }
+
+        public Guid FolderId { get; set; }
         [Required]
-        [ForeignKey("FolderId")]
-        public FolderModel Folder { get; set; }
+        public virtual FolderModel Folder { get; set; }
     }
 }

@@ -1,83 +1,58 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotesService.Data;
 using NotesService.Models;
+using NotesService.Models.RequestModels;
 
 namespace NotesService.Controllers
 {
+    [Authorize]
+    [Route("api/noteservice/[controller]")]
     [ApiController]
-    [Route("api/notesservice/[controller]")]
     public class FoldersController : ControllerBase
     {
         private readonly NotesContext _context;
-        public FoldersController(NotesContext context)
+        private readonly UserManager<UserModel> _userManager;
+
+        public FoldersController(NotesContext context, UserManager<UserModel> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-        [HttpGet("getfolders")]
-        public async Task<ActionResult<IEnumerable<FolderModel>>> GetFolder()
+
+        // POST: api/Folders
+        [HttpPost]
+        public async Task<ActionResult<FolderModel>> CreateFolder([FromBody] CreateorModifyFolderRequest request)
         {
-            return await _context.Folders.ToListAsync();
-        }
-        [HttpPost("createfolder")]
-        public async Task<ActionResult<FolderModel>> PostFolder(FolderModel folder/*, NoteModel noteModel*/)
-        {
-            //_context.Notes.Add(noteModel);
+            Console.WriteLine(User);
+            var user = HttpContext.Items["UserModel"] as UserModel; // Явное приведение типа
+            if (user == null)
+            {
+                // Обработка случая, когда пользователь не найден
+                return Unauthorized();
+            }
+
+            var folder = new FolderModel
+            {
+                Name = request.Name,
+                Description = request.Description,
+                User = user, // Используйте UserId, так как User ожидает объект UserModel
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+                // Остальные поля инициализируются здесь или остаются пустыми
+            };
+
             _context.Folders.Add(folder);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetFolder), new { id = folder.Id }, folder);
+
+            return CreatedAtAction("GetFolder", new { id = folder.Id }, folder);
         }
-        [HttpGet("getfolderbyid/{id}")]
-        public async Task<ActionResult<FolderModel>> GetFolders(int id)
-        {
-            var foler = await _context.Folders.FindAsync(id);
 
-            if (foler == null)
-            {
-                return NotFound();
-            }
-
-            return foler;
-        }
-        [HttpPut("updatefolderbyid/{id}")]
-        public async Task<IActionResult> PutFolder(int id, [FromBody] FolderModel folder)
-        {
-            var updatedFolder = await _context.Folders.FindAsync(id);
-
-            if (updatedFolder == null)
-            {
-                return NotFound();
-            }
-            updatedFolder.FolderName = folder.FolderName;
-            updatedFolder.FolderIds = folder.FolderIds;
-            updatedFolder.NoteIds = folder.NoteIds;
-            updatedFolder.UpdatedAt = DateTime.Now;
-            updatedFolder.HasSmthngInIt=folder.HasSmthngInIt;
-
-
-
-            _context.Entry(updatedFolder).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FolderExists(folder.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-        [HttpDelete("deletefolderbyid/{id}")]
-        public async Task<IActionResult> DeleteFolder(int id)
+        // DELETE: api/Folders/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFolder(Guid id)
         {
             var folder = await _context.Folders.FindAsync(id);
             if (folder == null)
@@ -90,9 +65,31 @@ namespace NotesService.Controllers
 
             return NoContent();
         }
-        private bool FolderExists(int id)
+
+        // PUT: api/Folders/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFolder(Guid id, [FromBody] CreateorModifyFolderRequest request)
         {
-            return _context.Folders.Any(f => f.Id == id);
+            var folder = await _context.Folders.FindAsync(id);
+            if (folder == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (folder.User != user)
+            {
+                return Unauthorized();
+            }
+
+            folder.Name = request.Name;
+            folder.Description = request.Description ?? folder.Description; // Если Description не предоставлен, оставляем текущее значение
+            folder.UpdatedAt = DateTime.UtcNow;
+
+            _context.Entry(folder).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 

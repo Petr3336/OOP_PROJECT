@@ -1,5 +1,6 @@
 using Authorization.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
@@ -26,26 +27,39 @@ var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
 
-//builder.Services.AddIdentity<UserModel, IdentityRole>()
-//    .AddEntityFrameworkStores<AuthorizationContext>()
-//    .AddDefaultTokenProviders();
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//}).AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = false,
-//        ValidateAudience = false,
-//        ValidateLifetime = true,
-//        ValidateIssuerSigningKey = true,
-//        //ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//        //ValidAudience = builder.Configuration["Jwt:Audience"],
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-//    };
-//});
+if (builder.Environment.IsDevelopment())
+{
+    builder.AddSqlServerDbContext<NotesContext>("NotesDb");
+    builder.AddSqlServerDbContext<AuthorizationContext>("NotesDb");
+}
+else
+{
+    builder.Services.AddDbContext<NotesContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
+}
+
+builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AuthorizationContext>()
+    .AddDefaultTokenProviders();
+/*builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = configuration["Jwt:Issuer"],
+
+        ValidateAudience = true,
+        ValidAudience = configuration["Jwt:Audience"],
+        ValidateLifetime = true,
+
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
+        ValidateIssuerSigningKey = true,
+    };
+});*/
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -72,15 +86,6 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 }
 );
-if (builder.Environment.IsDevelopment())
-{
-    builder.AddSqlServerDbContext<NotesContext>("NotesDb");
-    //builder.AddSqlServerDbContext<AuthorizationContext>("NotesDb");
-}
-else
-{
-    builder.Services.AddDbContext<NotesContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
-}
 
 var app = builder.Build();
 
@@ -92,7 +97,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseAuthentication(); 
-//app.UseJwtMiddleware();
+app.UseJwtMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();

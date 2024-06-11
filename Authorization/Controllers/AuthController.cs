@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             var token = await GenerateJwtToken(user);
-            return Ok(new { Token = token });
+            return Ok(new { Token = token, UserId = user.Id.ToString() });
         }
 
         return Unauthorized(new { Message = "Invalid login attempt" });
@@ -61,12 +61,12 @@ public class AuthController : ControllerBase
         var userClaims = await _userManager.GetClaimsAsync(user);
 
         var claims = new List<Claim> {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("nameIdentifier", user.Id),
+            new Claim("nameIdentifier", user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Name, user.UserName),
             new Claim("actor", user.UserName),
-            new Claim("uid", user.Id),
+            new Claim("uid", user.Id.ToString()),
     };
 
         claims.Union(userClaims);

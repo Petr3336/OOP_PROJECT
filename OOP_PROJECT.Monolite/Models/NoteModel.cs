@@ -13,12 +13,13 @@ namespace NotesService.Models
         public bool IsCompleted { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        [Required]
-        [ForeignKey("UserId")]
-        public UserModel User { get; set; }
 
+        public Guid UserId { get; set; }
         [Required]
-        [ForeignKey("NoteListId")]
-        public NoteListModel NoteList { get; set; }
+        public virtual UserModel User { get; set; }
+
+        public Guid NoteListId { get; set; }
+        [Required]
+        public virtual NoteListModel NoteList { get; set; }
     }
 }

@@ -1,98 +1,85 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotesService.Data;
 using NotesService.Models;
 
 namespace NotesService.Controllers
 {
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("api/notesservice/[controller]")]
-    public class NoteListController : ControllerBase
+    public class NoteListsController : ControllerBase
     {
         private readonly NotesContext _context;
-        public NoteListController(NotesContext context)
+        private readonly UserManager<UserModel> _userManager;
+
+        public NoteListsController(NotesContext context, UserManager<UserModel> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-        [HttpGet("getnotelists")]
-        public async Task<ActionResult<IEnumerable<NoteListModel>>> GetList()
+
+        // POST: api/NoteLists
+        [HttpPost]
+        public async Task<ActionResult<NoteListModel>> CreateNoteList(NoteListModel noteList)
         {
-            return await _context.NoteLists.ToListAsync();
-        }
-        [HttpPost("createnotelist")]
-        public async Task<ActionResult<NoteListModel>> PostList(NoteListModel list/*, NoteModel noteModel*/)
-        {
-            //_context.Notes.Add(noteModel);
-            _context.NoteLists.Add(list);
+            var user = await _userManager.GetUserAsync(User);
+            noteList.User = user;
+            noteList.CreatedAt = DateTime.UtcNow;
+            noteList.UpdatedAt = DateTime.UtcNow;
+
+            // Проверка наличия родительской папки
+            var folder = await _context.Folders.FindAsync(noteList.Folder);
+            if (folder == null || folder.User != user)
+            {
+                return BadRequest("Folder not found or not owned by the user.");
+            }
+
+            _context.NoteLists.Add(noteList);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetList), new { id = list.Id }, list);
+
+            return CreatedAtAction("GetNoteList", new { id = noteList.Id }, noteList);
         }
-        [HttpGet("getnotelistbyid/{id}")]
-        public async Task<ActionResult<NoteListModel>> GetList(int id)
+
+        // PUT: api/NoteLists/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNoteList(Guid id, NoteListModel noteList)
         {
-            var list = await _context.NoteLists.FindAsync(id);
-
-            if (list == null)
+            if (id != noteList.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            return list;
-        }
-        [HttpPut("updatenotelistbyid/{id}")]
-        public async Task<IActionResult> PutFolder(int id, [FromBody] NoteListModel list)
-        {
-            var updatedList = await _context.NoteLists.FindAsync(id);
-
-            if (updatedList == null)
+            var user = await _userManager.GetUserAsync(User);
+            if (noteList.User != user)
             {
-                return NotFound();
-            }
-            
-
-            updatedList.Id=list.Id;
-            updatedList.FolderIdls=list.FolderIdls;
-            updatedList.IsInFolder = list.IsInFolder;
-            updatedList.HasSmtngInIt= list.HasSmtngInIt;
-            updatedList.Notes = list.Notes;
-
-            _context.Entry(updatedList).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
+                return Unauthorized();
             }
 
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ListExists(list.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            noteList.UpdatedAt = DateTime.UtcNow;
 
-            return NoContent();
-        }
-        [HttpDelete("deletenotelistbyid/{id}")]
-        public async Task<IActionResult> DeleteList(int id)
-        {
-            var folder = await _context.NoteLists.FindAsync(id);
-            if (folder == null)
-            {
-                return NotFound();
-            }
-
-            _context.NoteLists.Remove(folder);
+            _context.Entry(noteList).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-        private bool ListExists(int id)
+
+        // DELETE: api/NoteLists/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNoteList(Guid id)
         {
-            return _context.NoteLists.Any(f => f.Id == id);
+            var noteList = await _context.NoteLists.FindAsync(id);
+            if (noteList == null)
+            {
+                return NotFound();
+            }
+
+            _context.NoteLists.Remove(noteList);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

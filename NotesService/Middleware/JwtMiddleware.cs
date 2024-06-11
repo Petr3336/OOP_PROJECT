@@ -39,11 +39,11 @@ public class JwtMiddleware
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
             var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
+                ValidateIssuerSigningKey = false,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = true,
+                ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
@@ -52,11 +52,20 @@ public class JwtMiddleware
             if (userIdClaim != null)
             {
                 var user = await userManager.FindByIdAsync(userIdClaim);
-                var claimsIdentity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+                var userClaims = await userManager.GetClaimsAsync(user);
+                var claimsIdentity = new ClaimsIdentity(userClaims, "jwt");
+
+                // Добавляем claims из токена
+                foreach (var claim in jwtToken.Claims)
+                {
+                    claimsIdentity.AddClaim(claim);
+                }
+
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
                 // Attach the user claims to the HttpContext.User
                 context.User = claimsPrincipal;
+                context.Items.Add("UserModel", user);
             }
         }
         catch

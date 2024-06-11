@@ -23,7 +23,7 @@ var configuration = new ConfigurationBuilder()
 // Connecting to local SQLite db.
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //        options.UseSqlServer(builder.Environment.IsDevelopment() ? configuration.GetConnectionString("DbConnectionDev") : configuration.GetConnectionString("DbConnection")));
-builder.Services.AddIdentity<UserModel, IdentityRole>()
+builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AuthorizationContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddAuthentication(options =>
