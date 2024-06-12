@@ -34,7 +34,7 @@ namespace NotesService.Controllers
         public async Task<ActionResult<NoteListModel>> GetNoteList(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var noteList = await _context.NoteLists
+            var noteList =  _context.NoteLists
                 .Include(nl => nl.Notes) // Загружаем заметки для списка
                 .FirstOrDefaultAsync(nl => nl.Id == id && nl.UserId == userId);
 

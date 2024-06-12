@@ -18,14 +18,20 @@ namespace NotesService.Controllers
             _context = context;
         }
 
-        // GET: api/NoteLists
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes()
+        //GET: api/NoteLists
+        [HttpGet("getallnotesfromnotelistbyid/{id}")]
+        public async Task<ActionResult<NoteModel>> GetNoteFromNoteList(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var list =  await _context.NoteLists.FirstOrDefaultAsync(l => l.Id == id && l.UserId == userId);
+            var listid = list.Id;
             var notes = await _context.Notes
-                .Where(n => n.UserId == userId)
+                .Where(n => n.UserId == userId &&  n.NoteListId==listid)
                 .ToListAsync();
+            if (notes == null)
+            {
+                return NotFound();
+            }
             return Ok(notes);
         }
 
@@ -35,7 +41,6 @@ namespace NotesService.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var notes = await _context.Notes
-                //.Include(nl => nl.Notes) // Загружаем заметки для списка
                 .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
 
             if (notes == null)
