@@ -12,14 +12,20 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.1" />
     <PackageReference Include="Aspire.Hosting.NodeJs" Version="8.0.1" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="8.0.1" />
     <PackageReference Include="Aspire.Hosting.SqlServer" Version="8.0.1" />
     <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Aspire.StackExchange.Redis" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.6.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AuthorizationService\AuthorizationService.csproj" />
+    <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\NotesService\NotesService.csproj" />
     <ProjectReference Include="..\oop_project.client\oop_project.client.esproj" />
+    <ProjectReference Include="..\OOP_PROJECT.Monolite\OOP_PROJECT.Monolite.csproj" />
     <ProjectReference Include="..\OOP_PROJECT.Server\OOP_PROJECT.Server.csproj" />
     <ProjectReference Include="..\PasswordManagerService\PasswordManagerService.csproj" />
   </ItemGroup>

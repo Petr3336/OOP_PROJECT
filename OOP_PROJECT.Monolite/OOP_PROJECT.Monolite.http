@@ -1,0 +1,6 @@
+@OOP_PROJECT.Monolite_HostAddress = http://localhost:5107
+
+GET {{OOP_PROJECT.Monolite_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
