@@ -79,12 +79,12 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://localhost:5000", // ASP.NET Core API
+        target: "https://localhost:7076", // ASP.NET Core API
         changeOrigin: true,
         secure: false,
       },
       "/swagger": {
-        target: "https://localhost:5000", // Swagger api renderer
+        target: "https://localhost:7076", // Swagger api renderer
         changeOrigin: true,
         secure: false,
       },

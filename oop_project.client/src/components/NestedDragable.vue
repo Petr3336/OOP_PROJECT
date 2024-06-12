@@ -14,7 +14,7 @@
         <div v-if="element.type == 0">
           <v-list-item
             :active="false"
-            :prepend-icon="selectIcon(element.type)"
+            :prepend-icon="selectIcon(element)" 
             :title="element.name"
             :key="element.id"
             @click="element.collapsed = !element.collapsed"
@@ -37,7 +37,7 @@
         <v-list-item
           v-if="element.type != 0"
           color="primary"
-          :prepend-icon="selectIcon(element.type)"
+          :prepend-icon="selectIcon(element)"
           :title="element.name"
           :key="element.id"
           :to="computeRoute(element.id, element.type)"
@@ -56,7 +56,6 @@
   </draggable>
 </template>
 <script>
-import { useNavigationStore } from "../stores/NavigationStore.js";
 import draggable from "vuedraggable";
 export default {
   props: {

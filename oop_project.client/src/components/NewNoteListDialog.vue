@@ -59,7 +59,7 @@
       </v-form>
     </v-card>
   </v-dialog>
-</template>
+</template> 
 
 <script>
 import { useNavigationStore } from "@/stores/NavigationStore";
@@ -84,8 +84,7 @@ export default {
   methods: {
     createNewNoteList(isValid, newNoteListName, newNoteListText) {
       if (isValid) {
-        let newNoteList = this.noteListStore.createNotesList(newNoteListName, newNoteListText);
-        this.navigationStore.createNoteNavigation(newNoteList.id, newNoteListName);
+        this.noteListStore.createNotesList(newNoteListName, newNoteListText);
         this.newNoteListDialog = false;
         this.newNoteList = { name: "", text: "" };
       }

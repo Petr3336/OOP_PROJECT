@@ -11,6 +11,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
+      meta: {requiresAuth: true},
       component: IntefaceView,
       children: [
         {
@@ -33,11 +34,25 @@ const router = createRouter({
   ],
 });
 
+// router.beforeEach((to, from, next) => {
+//   if (false) {
+//   } else {
+//     next(); // всегда так или иначе нужно вызвать next()!
+//   }
+// });
+
 router.beforeEach((to, from, next) => {
-  if (false) {
-  } else {
-    next(); // всегда так или иначе нужно вызвать next()!
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+      if (localStorage.getItem('accessToken') == null) {
+          next({
+              path: '/login',
+              params: { nextUrl: to.fullPath }
+          })
+      }
+      next()
   }
-});
+  next()
+})
+
 
 export default router;

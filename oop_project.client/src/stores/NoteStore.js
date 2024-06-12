@@ -1,4 +1,8 @@
 import { defineStore } from 'pinia';
+import axios from "axios";
+axios.defaults.headers.common = {
+  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+};
 
 class Note {
   constructor(id, name, text, completed=false) {
@@ -12,19 +16,14 @@ class Note {
 export const useNoteStore = defineStore('noteStore', {
   state: () => ({
     notes: [
-      {
-        id: 0,
-        name: "note 1",
-        completed: false
-      },
-      {
-        id: 1,
-        name: "note 2",
-        completed: false
-      }
     ]
   }),
   actions: {
+    refreshNotesFromServer() {
+      axios
+        .get("/api/NoteList")
+        .then((response) => (this.noteList = response.data));
+    },
     getNoteList(id) {
       return this.notes.find(note => note.id == id);
     },

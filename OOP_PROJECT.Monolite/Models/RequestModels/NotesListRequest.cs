@@ -4,6 +4,7 @@ namespace NotesService.Models.RequestModels
 {
     public class CreateOrModifyNoteListRequest
     {
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
 

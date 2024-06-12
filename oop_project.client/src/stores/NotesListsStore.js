@@ -1,30 +1,28 @@
 import { defineStore } from "pinia";
+import axios from "axios";
+axios.defaults.headers.common = {
+  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+};
 
 class NoteList {
-  constructor(id, name, text, Notes = []) {
+  constructor(id, name, description, Notes = []) {
     this.id = id;
     this.name = name;
-    this.text = text;
+    this.description = description;
     this.notes = Notes;
   }
 }
 
 export const useNotesListStore = defineStore("noteListStore", {
   state: () => ({
-    noteList: [
-      {
-        id: 0,
-        name: "note 1",
-        notes: [0, 1],
-      },
-      {
-        id: 1,
-        name: "note 2",
-        notes: [],
-      },
-    ],
+    noteList: [],
   }),
   actions: {
+    refreshNoteListsFromServer() {
+      axios
+        .get("/api/NoteList")
+        .then((response) => (this.noteList = response.data));
+    },
     getNoteList(id) {
       return this.noteList.find((folder) => folder.id == id);
     },
@@ -32,11 +30,28 @@ export const useNotesListStore = defineStore("noteListStore", {
       const Notes = this.getNoteList(id);
       return Notes ? Notes.childrenNotesLists : [];
     },
-    createNotesList(name, text) {
-      let id = Math.ceil(Math.random()*1000000);
-      const newNoteList = new NoteList(id, name, text);
-      this.noteList.push(newNoteList);
-      return newNoteList;
+    createNotesList(name, description) {
+      axios
+        .post("/api/NoteList", { name, description, position: 0 })
+        .then((response) => {
+          this.noteList.push(
+            new NoteList(
+              response.data.id,
+              response.data.name,
+              response.data.description
+            )
+          );
+        }).catch((error) => {
+          alert(
+            error.response.data.errors[
+              Object.keys(error.response.data.errors)[0]
+            ]
+          );
+          throw "noteListCreationError";
+        });
+      //const newNoteList = new NoteList(id, name, description);
+      //this.noteList.push(newNoteList);
+      //return newNoteList;
     },
     addNote(noteListId, noteId) {
       let pushingIndex = this.noteList.findIndex(

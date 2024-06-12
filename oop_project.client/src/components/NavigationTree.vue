@@ -1,31 +1,10 @@
-<script setup>
+<!-- <script setup>
 import { useNavigationStore } from "../stores/NavigationStore.js";
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { watch } from "vue";
 
-const useFolderStore = defineStore('folder', {
-  state: () => ({
-    folders: [{
-        id: 0,
-        name: "1",
-        position: "0",
-        parent: 0,
-        childrenFolders: [],
-        childrenNotesLists: [],
-      }]
-  }),
-});
-
-const folderStore = useFolderStore();
-
-const folders = ref(folderStore.folders);
-
-watch(folders, (newFolders) => {
-  folderStore.folders = newFolders;
-}, { deep: true });
-
+const navigationStore = useNavigationStore();
 const navigationStoreRef = storeToRefs(navigationStore);
-
 const navigation = navigationStoreRef.navigation;
 
 watch(
@@ -43,7 +22,17 @@ watch(
   },
   { deep: true }
 );
-</script>
+
+import { useNotesListStore } from "../stores/NotesListsStore";
+import { storeToRefs } from "pinia";
+
+const noteListStore = useNotesListStore();
+
+const noteListStoreRef = storeToRefs(noteListStore);
+
+const notesLists = noteListStoreRef.noteList;
+
+</script> -->
 <template class="d-flex flex-column">
   <v-list-item class="" height="64px" :elevation="2" title="Ваши заметки"
     ><template v-if="$vuetify.display.mobile" v-slot:prepend
@@ -56,13 +45,27 @@ watch(
     color="primary"
     :height="$vuetify.display.height - 128"
     bordered
+    lines="two"
     class="rounded-borders pa-0 overflow-y-auto"
   >
-    <nested-draggable
+    <!-- <nested-draggable
       :folders="navigation"
       :empty="false"
       :disabled="disableDragging"
-    />
+    /> -->
+
+    <v-list-item
+      v-for="noteList in notesLists"
+      :key="noteList.id"
+      :title="noteList.name"
+      :to="'/note/' + noteList.id"
+    >
+      <template #subtitle v-if="noteList.description">
+        <div class="mb-1">
+          {{ noteList.description }}
+        </div>
+      </template>
+    </v-list-item>
   </v-list>
   <v-list-item
     class="mt-auto position-sticky bottom-0 left-0"
@@ -104,26 +107,35 @@ watch(
       </v-snackbar>
     </template>
     <template #append>
-      <NewFolderDialog />
+      <!-- <NewFolderDialog /> -->
       <NewNoteListDialog />
     </template>
   </v-list-item>
 </template>
 
 <script>
-import nestedDraggable from "./NestedDragable.vue";
-import NewFolderDialog from "./NewFolderDialog.vue";
+//import nestedDraggable from "./NestedDragable.vue";
+//import NewFolderDialog from "./NewFolderDialog.vue";
 import NewNoteListDialog from "./NewNoteListDialog.vue";
+import { useNotesListStore } from "../stores/NotesListsStore";
+import { storeToRefs } from "pinia";
 export default {
   name: "navigationTree",
   order: 15,
   components: {
-    nestedDraggable,
-    NewFolderDialog,
+    //nestedDraggable,
+    //NewFolderDialog,
     NewNoteListDialog,
   },
   emits: ["closeNavBar"],
-  setup() {},
+  setup() {
+    const noteListStore = useNotesListStore();
+
+    const noteListStoreRef = storeToRefs(noteListStore);
+
+    const notesLists = noteListStoreRef.noteList;
+    return { noteListStore, noteListStoreRef, notesLists };
+  },
   data() {
     return {
       disableDragging: false,
@@ -144,12 +156,13 @@ export default {
   },
   mounted() {
     this.disableDragging = this.$vuetify.display.mobile;
+    this.noteListStore.refreshNoteListsFromServer();
   },
 };
 </script>
-<style scoped>
+<style>
 .NavigationTree {
-  min-height: 50px;
+  min-height: 2px;
   outline: 1px dashed;
 }
 </style>

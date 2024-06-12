@@ -37,6 +37,7 @@
       v-if="note && editing"
       :model-value="note"
       @update:model-value="(val) => notesStore.updateNote(val)"
+      :actions="false"
     >
       <template
         v-slot:default="{
@@ -44,7 +45,6 @@
           save,
           cancel,
           isPristine,
-          actions,
         }"
       >
         <v-card-item>
