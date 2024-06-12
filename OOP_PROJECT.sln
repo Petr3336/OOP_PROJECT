@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotesService", "NotesServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PasswordManagerService", "PasswordManagerService\PasswordManagerService.csproj", "{59D6569B-D6D1-406A-981D-1C8EA5316BFB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization", "Authorization\Authorization.csproj", "{BE67A327-BE1B-44F5-91BB-72388D5893A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OOP_PROJECT.Monolite", "OOP_PROJECT.Monolite\OOP_PROJECT.Monolite.csproj", "{2A4C0578-CCB0-4E19-A87C-42CD34730E82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,14 @@ Global
 		{59D6569B-D6D1-406A-981D-1C8EA5316BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59D6569B-D6D1-406A-981D-1C8EA5316BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59D6569B-D6D1-406A-981D-1C8EA5316BFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE67A327-BE1B-44F5-91BB-72388D5893A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE67A327-BE1B-44F5-91BB-72388D5893A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE67A327-BE1B-44F5-91BB-72388D5893A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE67A327-BE1B-44F5-91BB-72388D5893A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A4C0578-CCB0-4E19-A87C-42CD34730E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A4C0578-CCB0-4E19-A87C-42CD34730E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A4C0578-CCB0-4E19-A87C-42CD34730E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A4C0578-CCB0-4E19-A87C-42CD34730E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

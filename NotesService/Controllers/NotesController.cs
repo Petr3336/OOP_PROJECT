@@ -1,86 +1,75 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotesService.Data;
 using NotesService.Models;
-
+using System.Security.Claims;
 namespace NotesService.Controllers
 {
+
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
     public class NotesController : ControllerBase
     {
         private readonly NotesContext _context;
+        private readonly UserManager<UserModel> _userManager;
 
-        public NotesController(NotesContext context)
+        public NotesController(NotesContext context, UserManager<UserModel> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: api/notes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<NoteModel>>> GetNotes()
+        // POST: api/Notes
+        [HttpPost]
+        public async Task<ActionResult<NoteModel>> CreateNote(NoteModel note)
         {
-            return await _context.Notes.ToListAsync();
-        }
+            var user = await _userManager.GetUserAsync(User);
+            note.User = user;
+            note.CreatedAt = DateTime.UtcNow;
+            note.UpdatedAt = DateTime.UtcNow;
 
-        // GET: api/notes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NoteModel>> GetNote(int id)
-        {
-            var note = await _context.Notes.FindAsync(id);
-
-            if (note == null)
+            // Проверка наличия списка заметок
+            var noteList = await _context.NoteLists.FindAsync(note.NoteList);
+            if (noteList == null || noteList.User != user)
             {
-                return NotFound();
+                return BadRequest("NoteList not found or not owned by the user.");
             }
 
-            return note;
-        }
-
-        // POST: api/notes
-        [HttpPost]
-        public async Task<ActionResult<NoteModel>> PostNote(NoteModel note)
-        {
             _context.Notes.Add(note);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetNote), new { id = note.Id }, note);
-        }
-
-        // PUT: api/notes/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutNote([FromBody] NoteModel note)
-        {
-            if (note == null)
-            {
-                return BadRequest();
-            }
-
-            _context.Notes.Add(note);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NoteExists(note.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
             return CreatedAtAction("GetNote", new { id = note.Id }, note);
         }
 
-        // DELETE: api/notes/5
+        // PUT: api/Notes/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNote(Guid id, NoteModel note)
+        {
+            if (id != note.Id)
+            {
+                return BadRequest();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (note.User != user)
+            {
+                return Unauthorized();
+            }
+
+            note.UpdatedAt = DateTime.UtcNow;
+
+            _context.Entry(note).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // DELETE: api/Notes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteNote(Guid id)
         {
             var note = await _context.Notes.FindAsync(id);
             if (note == null)
@@ -92,11 +81,6 @@ namespace NotesService.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool NoteExists(int id)
-        {
-            return _context.Notes.Any(e => e.Id == id);
         }
     }
 }

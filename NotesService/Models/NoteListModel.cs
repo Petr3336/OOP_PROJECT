@@ -3,22 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NotesService.Models
 {
-    // Модель заметки
-    public class NoteModel
+    // Модель списка заметок
+    public class NoteListModel
     {
         public Guid Id { get; set; }
         [Required]
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public bool IsCompleted { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public virtual ICollection<Guid> Notes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         [Required]
         [ForeignKey("UserId")]
         public UserModel User { get; set; }
-
         [Required]
-        [ForeignKey("NoteListId")]
-        public NoteListModel NoteList { get; set; }
+        [ForeignKey("FolderId")]
+        public FolderModel Folder { get; set; }
     }
 }
