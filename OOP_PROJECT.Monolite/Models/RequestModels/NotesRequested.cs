@@ -11,5 +11,7 @@ namespace NotesService.Models.RequestModels
 
         [Required]
         public string Content { get; set; }
+
+        public int NoteListId { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace NotesService.Models
 
         [Required]
         public string UserId { get; set; }
-
+        [JsonIgnore]
         public UserModel User { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
