@@ -7,38 +7,56 @@
     item-key="name"
     @end="onUpdate"
     :clickable="false"
+    :disabled="disabled"
   >
     <template #item="{ element }">
       <div>
+        <div v-if="element.type == 0">
+          <v-list-item
+            :active="false"
+            :prepend-icon="selectIcon(element.type)"
+            :title="element.name"
+            :key="element.id"
+            @click="element.collapsed = !element.collapsed"
+            :append-icon="
+              element.collapsed ? 'mdi-chevron-up' : 'mdi-chevron-down'
+            "
+            >
+          </v-list-item>
+          <v-slide-y-transition :duration="155" mode="default" >
+            <nested-draggable
+              v-show="!element.collapsed"
+              class="ml-8"
+              :folders="element.childrenNavigation"
+              @end="onUpdate"
+              :empty="element.childrenNavigation.length == 0"
+              :disabled="disabled"
+            />
+          </v-slide-y-transition>
+        </div>
         <v-list-item
-          :prepend-icon="selectIcon(element)"
+          v-if="element.type != 0"
+          color="primary"
+          :prepend-icon="selectIcon(element.type)"
           :title="element.name"
           :key="element.id"
           :to="computeRoute(element.id, element.type)"
-          :append-icon="element.type == 0 ? element.expanded ? 'mdi-chevron-down' : 'mdi-chevron-down' : ''"
-        >
-        </v-list-item>
-        <nested-draggable
-          v-if="element.type == 0"
-          class="ml-4"
-          :folders="element.tasks"
-          :onUpdate="onUpdate"
-          :empty="element.tasks.length == 0"
-        />
-        
+        ></v-list-item>
       </div>
     </template>
     <template #header v-if="empty">
       <v-list-item
-          prepend-icon="mdi-information-outline"
-          title="Пока что это пустая папка"
-          :key="0"
-        >
-        </v-list-item> </template>
-    <template #footer> </template>
+        prepend-icon="mdi-information-outline"
+        title="Пока что это пустая папка"
+        :key="0"
+      >
+      </v-list-item
+    ></template>
+    <template #footer></template>
   </draggable>
 </template>
 <script>
+import { useNavigationStore } from "../stores/NavigationStore.js";
 import draggable from "vuedraggable";
 export default {
   props: {
@@ -54,11 +72,21 @@ export default {
       required: false,
       type: Function,
     },
+    disabled: {
+      required: false,
+      type: Boolean,
+    },
   },
   components: {
     draggable,
   },
   name: "nested-draggable",
+  data() {
+    return {
+      childrenVisible: true,
+      isMounted: false,
+    };
+  },
   methods: {
     selectIcon(el) {
       switch (el.type) {
@@ -70,11 +98,17 @@ export default {
           return "mdi-information-outline";
       }
     },
-    computeRoute(id, type){
-      return '/' + (type == 0 ? 'folder' : 'note') + '/' + id
-    }
+    computeRoute(id, type) {
+      return "/" + (type == 0 ? "folder" : "note") + "/" + id;
+    },
+  },
+  mounted() {
+    this.isMounted = true;
   },
   computed: {
+    isOpen() {
+      return false;
+    },
   },
 };
 </script>
