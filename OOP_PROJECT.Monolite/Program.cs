@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using NotesService.Models;
 using OOP_PROJECT.Monolite.Managers;
+using OOP_PROJECT.Monolite.Service;
+using OOP_PROJECT.Monolite.Service.IService;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,8 @@ builder.Services.AddSwaggerGen(options =>
 );
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<INoteListService,NoteListService>();
+builder.Services.AddScoped<INoteService,NoteService>();
 
 /*builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
