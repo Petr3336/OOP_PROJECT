@@ -1,6 +1,5 @@
 <template>
-  <v-card variant="elevated" class="" width="90%">
-
+  <v-card variant="elevated" class="">
     <!-- В режиме просмотра -->
     <v-card-item v-if="!editing">
       <div :class="note ? '' : 'pb-6 pt-3'">
@@ -8,9 +7,13 @@
         <div class="text-h6 mb-1">
           {{ note ? note.name : "Здесь пока пусто" }}
         </div>
-        <div class="">
-          {{ note ? note.description : "Создайте свою первую заметку" }}
-        </div>
+        <div
+          v-if="note && isSafeHtml(note.description)"
+          class="text-body-1"
+          v-html="note.description"
+        ></div>
+        <div v-else-if="note" class="text-body-1">Контент не безопасен</div>
+        <div v-else class="text-body-1">Создайте свою первую заметку</div>
       </div>
     </v-card-item>
 
@@ -46,7 +49,7 @@
           save,
           cancel,
           isPristine,
-          actions
+          actions,
         }"
       >
         <v-card-item>
@@ -111,8 +114,7 @@ import { useNoteStore } from "../stores/NoteStore";
 export default {
   name: "NoteComponent",
   props: {
-    note: {
-    },
+    note: {},
     editing: {
       type: Boolean,
     },
@@ -134,7 +136,11 @@ export default {
   },
   mounted() {},
   components: {},
-  methods: {},
+  methods: {
+    isSafeHtml(html) {
+      return !html.includes("<script>") && !html.includes("<//script>");
+    },
+  },
   computed: {},
 };
 </script>

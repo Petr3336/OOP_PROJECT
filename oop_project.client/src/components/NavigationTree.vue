@@ -68,8 +68,14 @@ const notesLists = noteListStoreRef.noteList;
       </template>
     </v-list-item>
   </v-list>
+  <v-dialog max-width="600" v-model="editNoteListDialog">
+    <NewNoteListDialog
+      @dialog-close="editNoteListDialog = false"
+      :editing-note-list="selectedNoteList"
+    />
+  </v-dialog>
   <context-menu v-model:show="contextMenuShow" :options="optionsComponent">
-    <context-menu-item>
+    <context-menu-item @click="editNoteListDialog = true">
       <template #icon>
         <v-icon size="20px">mdi-pencil</v-icon>
       </template>
@@ -77,9 +83,7 @@ const notesLists = noteListStoreRef.noteList;
         <span class="label ml-1">Изменить список заметок</span>
       </template>
     </context-menu-item>
-    <context-menu-item
-      @click="noteListStore.removeNotesList(selectedNoteList.id)"
-    >
+    <context-menu-item @click="removeNoteList()">
       <template #icon>
         <v-icon size="20px">mdi-delete</v-icon>
       </template>
@@ -129,7 +133,19 @@ const notesLists = noteListStoreRef.noteList;
     </template>
     <template #append>
       <!-- <NewFolderDialog /> -->
-      <NewNoteListDialog />
+      <v-dialog max-width="600" v-model="newNoteListDialog">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn
+            flat
+            size="38px"
+            icon="mdi-note-plus"
+            v-tooltip="'Создать новый список заметок'"
+            v-bind="activatorProps"
+          >
+          </v-btn>
+        </template>
+        <NewNoteListDialog @dialog-close="newNoteListDialog = false" />
+      </v-dialog>
     </template>
   </v-list-item>
 </template>
@@ -163,6 +179,8 @@ export default {
   },
   data() {
     return {
+      editNoteListDialog: false,
+      newNoteListDialog: false,
       contextMenuShow: false,
       disableDragging: false,
       snackbarIsDragabble: false,
@@ -189,6 +207,12 @@ export default {
       //Show menu
       this.contextMenuShow = true;
       console.log(noteList);
+    },
+    removeNoteList() {
+      this.noteListStore.removeNotesList(this.selectedNoteList.id).then(() => {
+        if (this.$route.params.id == this.selectedNoteList.id)
+          this.$router.push("/");
+      });
     },
   },
   mounted() {

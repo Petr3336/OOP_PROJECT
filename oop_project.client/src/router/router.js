@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-const IntefaceView = () => import('../views/InterfaceView.vue');
+const IntefaceView = () => import("../views/InterfaceView.vue");
 const Login = () => import("../views/LoginView.vue");
-const RegisterView = () => import("../views/RegisterView.vue")
+const RegisterView = () => import("../views/RegisterView.vue");
 const FolderView = () => import("../views/FolderView.vue");
 const NoteListView = () => import("../views/NoteListView.vue");
+const StartView = () => import("../components/StartView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,9 +12,14 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      meta: {requiresAuth: true},
+      meta: { requiresAuth: true },
       component: IntefaceView,
       children: [
+        {
+          path: "",
+          name: "StartView",
+          component: StartView
+        },
         {
           path: "/folder/:id(\\d+)",
           name: "FolderView",
@@ -42,19 +48,18 @@ const router = createRouter({
 // });
 
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-      if (localStorage.getItem('accessToken') == null) {
-          next({
-              name: "LoginView",
-              params: { nextUrl: to.fullPath }
-          })
-          return;
-      }
-      next()
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (localStorage.getItem("accessToken") == null) {
+      next({
+        name: "LoginView",
+        params: { nextUrl: to.fullPath },
+      });
       return;
+    }
+    next();
+    return;
   }
-  next()
-})
-
+  next();
+});
 
 export default router;

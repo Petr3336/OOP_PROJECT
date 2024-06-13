@@ -6,7 +6,7 @@
   >
     <noteComponent
       v-if="notes == undefined || notes.length == 0"
-      class="ma-6"
+      class="my-6 mx-16"
     ></noteComponent>
     <noteComponent
       v-else
@@ -15,10 +15,11 @@
       :note="note"
       :editing="editing"
       :deleting="deleting"
-      class="ma-6"
+      class="my-6 mx-16"
     ></noteComponent>
   </v-container>
   <notesToolbar
+    :no-notes="notes == undefined || notes.length == 0"
     @edit-mode="
       {
         (editing = !editing), (deleting = false);
