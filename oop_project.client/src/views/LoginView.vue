@@ -106,7 +106,11 @@ export default {
         .then((response) => {
           localStorage.setItem("accessToken", response.data.accessToken);
           localStorage.setItem("refreshToken", response.data.refreshToken);
-          this.$router.push({name: "home"})
+          this.$router.push({ name: "home" });
+        })
+        .catch((error) => {
+          alert(error.title);
+          throw "loginError";
         });
     },
   },

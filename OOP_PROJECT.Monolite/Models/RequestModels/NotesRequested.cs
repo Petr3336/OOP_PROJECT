@@ -9,9 +9,8 @@ namespace NotesService.Models.RequestModels
 
         public string? Description { get; set; }
 
+        public string? Content { get; set; }
         [Required]
-        public string Content { get; set; }
-
         public int NoteListId { get; set; }
     }
 }

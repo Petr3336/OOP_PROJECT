@@ -26,7 +26,7 @@ const router = createRouter({
         },
       ],
     },
-    { path: "/login", name: "LoginView", component: Login },
+    { path: "/login/", name: "LoginView", component: Login },
     { path: "/register", name: "RegisterView", component: RegisterView },
 
     //{ path: '/about', name: 'about', component: AboutView }
@@ -45,11 +45,13 @@ router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requiresAuth)) {
       if (localStorage.getItem('accessToken') == null) {
           next({
-              path: '/login',
+              name: "LoginView",
               params: { nextUrl: to.fullPath }
           })
+          return;
       }
       next()
+      return;
   }
   next()
 })

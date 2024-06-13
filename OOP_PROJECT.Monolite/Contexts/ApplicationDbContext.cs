@@ -25,7 +25,7 @@ public class ApplicationDbContext : IdentityDbContext<UserModel>
             .HasMany(nl => nl.Notes)
             .WithOne(n => n.NoteList)
             .HasForeignKey(n => n.NoteListId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Note - User (Many:1) 
         builder.Entity<NoteModel>()

@@ -9,7 +9,7 @@
           {{ note ? note.name : "Здесь пока пусто" }}
         </div>
         <div class="">
-          {{ note ? note.text : "Создайте свою первую заметку" }}
+          {{ note ? note.description : "Создайте свою первую заметку" }}
         </div>
       </div>
     </v-card-item>
@@ -17,7 +17,9 @@
     <v-card-actions v-if="note && !editing" class="mt-n2 mb-2">
       <v-checkbox-btn
         label="Checkbox"
-        v-model="note.completed"
+        v-bind:model-value="note.completed"
+        readonly
+        @click="notesStore.changeNoteStatus(note.id, note.completed)"
         :disabled="deleting"
       ></v-checkbox-btn>
       <v-btn
@@ -27,7 +29,7 @@
         color="error"
         icon="mdi-delete"
         v-tooltip="'Удалить заметку'"
-        :disabled="isPristine"
+        @click="notesStore.removeNote(note.id)"
       >
       </v-btn>
     </v-card-actions>
@@ -37,7 +39,6 @@
       v-if="note && editing"
       :model-value="note"
       @update:model-value="(val) => notesStore.updateNote(val)"
-      :actions="false"
     >
       <template
         v-slot:default="{
@@ -45,6 +46,7 @@
           save,
           cancel,
           isPristine,
+          actions
         }"
       >
         <v-card-item>
@@ -65,7 +67,7 @@
                 label="Описание вашей заметки"
                 rows="1"
                 class=""
-                v-model="proxyModel.value.text"
+                v-model="proxyModel.value.description"
                 variant="underlined"
                 auto-grow
                 counter

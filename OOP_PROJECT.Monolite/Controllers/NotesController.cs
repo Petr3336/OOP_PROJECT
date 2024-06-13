@@ -19,7 +19,7 @@ namespace NotesService.Controllers
         }
 
         //GET: api/NoteLists
-        [HttpGet("getallnotesfromnotelistbyid/{id}")]
+        [HttpGet("getNotesByNoteList/{id}")]
         public async Task<ActionResult<NoteModel>> GetNoteFromNoteList(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -51,7 +51,7 @@ namespace NotesService.Controllers
             return Ok(notes);
         }
 
-        // POST: api/NoteLists
+        // POST: api/Note
         [HttpPost]
         public async Task<ActionResult<NoteModel>> PostNoteList(CreateOrModifyNoteRequest notes)
         {

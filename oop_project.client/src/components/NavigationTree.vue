@@ -59,6 +59,7 @@ const notesLists = noteListStoreRef.noteList;
       :key="noteList.id"
       :title="noteList.name"
       :to="'/note/' + noteList.id"
+      @contextmenu="onContextMenu($event, noteList)"
     >
       <template #subtitle v-if="noteList.description">
         <div class="mb-1">
@@ -67,6 +68,26 @@ const notesLists = noteListStoreRef.noteList;
       </template>
     </v-list-item>
   </v-list>
+  <context-menu v-model:show="contextMenuShow" :options="optionsComponent">
+    <context-menu-item>
+      <template #icon>
+        <v-icon size="20px">mdi-pencil</v-icon>
+      </template>
+      <template #label>
+        <span class="label ml-1">Изменить список заметок</span>
+      </template>
+    </context-menu-item>
+    <context-menu-item
+      @click="noteListStore.removeNotesList(selectedNoteList.id)"
+    >
+      <template #icon>
+        <v-icon size="20px">mdi-delete</v-icon>
+      </template>
+      <template #label>
+        <span class="label ml-1">Удалить список заметок</span>
+      </template>
+    </context-menu-item>
+  </context-menu>
   <v-list-item
     class="mt-auto position-sticky bottom-0 left-0"
     height="64px"
@@ -119,6 +140,7 @@ const notesLists = noteListStoreRef.noteList;
 import NewNoteListDialog from "./NewNoteListDialog.vue";
 import { useNotesListStore } from "../stores/NotesListsStore";
 import { storeToRefs } from "pinia";
+import { ContextMenu, ContextMenuItem } from "@imengyu/vue3-context-menu";
 export default {
   name: "navigationTree",
   order: 15,
@@ -126,6 +148,9 @@ export default {
     //nestedDraggable,
     //NewFolderDialog,
     NewNoteListDialog,
+    ContextMenu,
+
+    ContextMenuItem,
   },
   emits: ["closeNavBar"],
   setup() {
@@ -138,8 +163,10 @@ export default {
   },
   data() {
     return {
+      contextMenuShow: false,
       disableDragging: false,
       snackbarIsDragabble: false,
+      selectedNoteList: null,
     };
   },
   methods: {
@@ -153,10 +180,33 @@ export default {
       this.disableDragging = !this.disableDragging;
       this.snackbarIsDragabble = true;
     },
+    onContextMenu(e, noteList) {
+      e.preventDefault();
+      this.selectedNoteList = noteList;
+      //Set the mouse position
+      this.optionsComponent.x = e.x;
+      this.optionsComponent.y = e.y;
+      //Show menu
+      this.contextMenuShow = true;
+      console.log(noteList);
+    },
   },
   mounted() {
     this.disableDragging = this.$vuetify.display.mobile;
     this.noteListStore.refreshNoteListsFromServer();
+  },
+  computed: {
+    optionsComponent() {
+      return {
+        theme: this.$vuetify.theme.current.dark ? "dark" : "default",
+        iconFontClass: "mdi",
+        customClass: "class-a",
+        zIndex: 1010,
+        minWidth: 230,
+        x: 500,
+        y: 200,
+      };
+    },
   },
 };
 </script>

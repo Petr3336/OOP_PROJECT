@@ -28,5 +28,7 @@ const vuetify = createVuetify({
 
 const pinia = createPinia()
 
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
+import ContextMenu from '@imengyu/vue3-context-menu'
 
-export const app = createApp(App).use(vuetify).use(router).use(pinia).mount('#app')
+export const app = createApp(App).use(vuetify).use(router).use(pinia).use(ContextMenu).mount('#app')

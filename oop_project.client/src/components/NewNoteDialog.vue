@@ -82,8 +82,7 @@ export default {
   methods: {
     createNewNote(isValid, newNoteName, newNoteText) {
       if (isValid) {
-        let newNote = this.notesStore.createNote(newNoteName, newNoteText);
-        this.notesListsStore.addNote(this.$route.params.id, newNote.id);
+        this.notesStore.createNote(newNoteName, newNoteText, this.$route.params.id);
         this.newNoteDialog = false;
         this.newNote = { name: "", text: "" };
       }

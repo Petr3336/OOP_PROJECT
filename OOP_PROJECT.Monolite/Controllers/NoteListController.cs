@@ -63,7 +63,7 @@ namespace NotesService.Controllers
             _context.NoteLists.Add(newlist);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetNoteList", new { id = newlist.Id }, noteList);
+            return CreatedAtAction("GetNoteList", new { id = newlist.Id }, newlist);
         }
 
         // PUT: api/NoteLists/5

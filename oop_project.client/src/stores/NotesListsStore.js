@@ -18,8 +18,8 @@ export const useNotesListStore = defineStore("noteListStore", {
     noteList: [],
   }),
   actions: {
-    refreshNoteListsFromServer() {
-      axios
+    async refreshNoteListsFromServer() {
+      await axios
         .get("/api/NoteList")
         .then((response) => (this.noteList = response.data));
     },
@@ -41,7 +41,8 @@ export const useNotesListStore = defineStore("noteListStore", {
               response.data.description
             )
           );
-        }).catch((error) => {
+        })
+        .catch((error) => {
           alert(
             error.response.data.errors[
               Object.keys(error.response.data.errors)[0]
@@ -52,6 +53,15 @@ export const useNotesListStore = defineStore("noteListStore", {
       //const newNoteList = new NoteList(id, name, description);
       //this.noteList.push(newNoteList);
       //return newNoteList;
+    },
+    removeNotesList(id) {
+      console.log("remove")
+      axios.delete(`/api/NoteList/${id}`).then(() => {
+        this.noteList.splice(
+          this.noteList.findIndex((List) => List.id == id),
+          1
+        );
+      });
     },
     addNote(noteListId, noteId) {
       let pushingIndex = this.noteList.findIndex(

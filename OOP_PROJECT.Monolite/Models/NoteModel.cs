@@ -11,9 +11,7 @@ namespace NotesService.Models
         public string Name { get; set; }
 
         public string? Description { get; set; }
-
-        [Required]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         public bool Completed { get; set; }
 
