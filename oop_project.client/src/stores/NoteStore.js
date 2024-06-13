@@ -1,8 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
-axios.defaults.headers.common = {
-  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-};
+import axios from "../axios/AxiosConfiguration";
 
 class Note {
   constructor(id, name, description, noteListId, completed = false) {

@@ -1,8 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
-axios.defaults.headers.common = {
-  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-};
+import axios from "../axios/AxiosConfiguration";
 
 class NoteList {
   constructor(id, name, description, Notes = []) {
@@ -30,7 +27,7 @@ export const useNotesListStore = defineStore("noteListStore", {
       const Notes = this.getNoteList(id);
       return Notes ? Notes.childrenNotesLists : [];
     },
-    createNotesList(name, description) {
+    async createNotesList(name, description) {
       axios
         .post("/api/NoteList", { name, description, position: 0 })
         .then((response) => {
@@ -54,9 +51,9 @@ export const useNotesListStore = defineStore("noteListStore", {
       //this.noteList.push(newNoteList);
       //return newNoteList;
     },
-    removeNotesList(id) {
+    async removeNotesList(id) {
       console.log("remove")
-      axios.delete(`/api/NoteList/${id}`).then(() => {
+      await axios.delete(`/api/NoteList/${id}`).then(() => {
         this.noteList.splice(
           this.noteList.findIndex((List) => List.id == id),
           1

@@ -2,7 +2,7 @@ using Aspire.Hosting;
 using Aspire.Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.DependencyInjection;
-
+//Environment.SetEnvironmentVariable("DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS", "true");
 var builder = DistributedApplication.CreateBuilder(args);
 var Redis = builder.AddRedis("JWTlist", 6770);
 // SQL Server container is configured with an auto-generated password by default

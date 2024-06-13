@@ -10,11 +10,13 @@
         prepend-icon="mdi-note-edit"
         @click="$emit('editMode')"
         v-tooltip="'Перейти в режим изменения заметок'"
+        :disabled="noNotes"
       ></v-list-item>
       <v-list-item
         prepend-icon="mdi-note-minus"
         @click="$emit('deleteMode')"
         v-tooltip="'Перейти в режим удаления заметок'"
+        :disabled="noNotes"
       ></v-list-item>
     </v-list>
 
@@ -32,7 +34,12 @@ export default {
     NewNoteDialog,
   },
   name: "NotesToolbar",
-  props: {},
+  props: {
+    noNotes: {
+      required: false,
+      type: Boolean
+    }
+  },
   setup() {},
   mounted() {},
   methods: {},
